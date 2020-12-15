@@ -29,6 +29,7 @@ db.mongoose
   });
 
  require("./app/members/members.routes.js")(app)
+ require("./app/helper/helper.routes.js")(app)
  
 
 
