@@ -1,13 +1,13 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        firstName: String,
-        lastName: String,
-        username: String,
-        phoneNo:String,
-        email:String,
-        isAdmin: Boolean,
-        imgUrl: String
+        fullName: String,
+        role: String,
+        roleId: String,
+        username:String,
+        branch:String,
+        title: String,
+        level: String
       },
       { timestamps: true }
     );

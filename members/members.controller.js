@@ -1,6 +1,7 @@
 
 const db = require("../mongoose");
 const Members = db.profiles;
+const Auths = db.auths;
 const passwordUtils =require('../helpers/passwordUtils');
 const jwtTokenUtils = require('../helpers/jwtTokenUtils.js');
 const sendemail = require('../helpers/emailhelper.js');
@@ -19,8 +20,8 @@ console.log(req.body)
   // let {myrefCode} = req.query;
     const {   email, password , firstName, lastName, phoneNo, username } = req.body;
   
-    if ( email && password  && lastName && firstName, phoneNo ){
-        if ( email==="" || password==="" || firstName==="" || lastName==="" || phoneNo===""  ){
+    if ( fullName && password  && role && roleId, username ){
+        if ( fullName==="" || password==="" || role==="" || roleId==="" || username===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -28,42 +29,41 @@ console.log(req.body)
             
             
             const members = new Members({
-                email: req.body.email.toLowerCase(),
-                firstName: req.body.firstName ,
-                lastName: req.body.lastName,
-                phoneNo: req.body.phoneNo,
-                isAdmin: false,
-                username: req.body.username,
-                imgUrl: " "
+                fullName: req.body.email,
+                role: req.body.role,
+                roleId: req.body.roleId,
+                username:req.body.username,
+                branch:req.body.branch || '',
+                branchId: req.body.branchId || '',
+                approvalTitle: req.body.approvalTitle || '',
+                approvalLevel: req.body.approvalLevel || ''
                 
               });
               const auths = new Auths({
-                email: req.body.email.toLowerCase(),
-                
-                
+                username: req.body.username               
               });
 
          
             try{
-              const isUserExist = await Members.findOne({email: email} )
+              const isUserExist = await Members.findOne({username: username} )
               console.log(isUserExist)
                if(isUserExist){
-                res.status(400).send({message:" Email already exists"})
+                res.status(400).send({message:" username already exists"})
                }else{
                 auths.password = await passwordUtils.hashPassword(req.body.password.toLowerCase());
-                const emailFrom = 'Ahiajara Skin care    <noreply@Ahiajara.com>';
-                const subject = 'Succesful Registration link';                      
-               const hostUrl = "ahiajara.netlify.app/dashboard"
-                 const hostUrl2 = "https://ahiajara.netlify.app/dashboard" 
+            //     const emailFrom = 'Ahiajara Skin care    <noreply@Ahiajara.com>';
+            //     const subject = 'Succesful Registration link';                      
+            //     const hostUrl = "ahiajara.netlify.app/dashboard"
+            //     const hostUrl2 = "https://ahiajara.netlify.app/dashboard" 
               
               
-            const   text = "We're excited to have you get started. Your Registration to Ahiajara skin care  was successful."
-                const emailTo = req.body.email.toLowerCase();
-             const link = `${hostUrl}`;
-                 const link2 = `${hostUrl2}`;
-                 processEmail(emailFrom, emailTo, subject, link, link2, text, firstName);
-                 const saveauth = await  auths.save()
-                  console.log(saveauth)
+                //  const   text = "We're excited to have you get started. Your Registration to Ahiajara skin care  was successful."
+                // const emailTo = req.body.email.toLowerCase();
+                // const link = `${hostUrl}`;
+                //  const link2 = `${hostUrl2}`;
+                //  processEmail(emailFrom, emailTo, subject, link, link2, text, firstName);
+                  const saveauth = await  auths.save()
+                   console.log(saveauth)
                   if(saveauth._id){
                  const savemember = await  members.save()
                    console.log(savemember)
