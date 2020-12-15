@@ -18,7 +18,7 @@ exports.create = async(req,res)=>{
     }
 console.log(req.body)
   // let {myrefCode} = req.query;
-    const {   email, password , firstName, lastName, phoneNo, username } = req.body;
+    const {   fullName, password , role, roleId, username } = req.body;
   
     if ( fullName && password  && role && roleId, username ){
         if ( fullName==="" || password==="" || role==="" || roleId==="" || username===""  ){
@@ -29,7 +29,7 @@ console.log(req.body)
             
             
             const members = new Members({
-                fullName: req.body.email,
+                fullName: req.body.fullName,
                 role: req.body.role,
                 roleId: req.body.roleId,
                 username:req.body.username,
@@ -91,10 +91,10 @@ exports.signIn = async(req, res) => {
 }
 console.log(req.body)
 // let {myrefCode} = req.query;
-const {   email, password  } = req.body;
+const {   username, password  } = req.body;
 
-if ( email && password ){
-    if ( email==="" || password==="" ){
+if ( username && password ){
+    if ( username==="" || password==="" ){
         res.status(400).send({
             message:"Incorrect entry format"
         });
@@ -102,32 +102,29 @@ if ( email && password ){
         
         
         const members = new Members({
-            email: req.body.email.toLowerCase(),
+            username: req.body.username,
             password: req.body.password
             
           });
 
      
         try{
-         const User = await Members.findOne({email: email} )
-         const Auth = await Auths.findOne({email: email} )
+         const User = await Members.findOne({username: username} )
+         const Auth = await Auths.findOne({username: username} )
          console.log(User)
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
-         const {  firstName, lastName, username, isAdmin, phoneNo, createdAt, updatedAt, isVerified, email, imgUrl } = User
+         const {  fullName, username, role, roleId, branch, branchId,  approvalLevel, approvalTitle } = User
             const isMatch = await passwordUtils.comparePassword(password.toLowerCase(), retrievedPassword);
             console.log(isMatch )
              if (isMatch){
-              const tokens = signToken( id, firstName, lastName, username, isAdmin, phoneNo, createdAt, updatedAt, isVerified, email) 
-            //  const Carts = db.carts;
-            //const findProduct = await Products.find({_id:id}) 
-            const countcart = await Carts.countDocuments({userId:id})
+              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  approvalLevel, approvalTitle) 
+        
             let user = {}
              
-                  user.profile = { id, firstName, lastName, username, isAdmin, phoneNo, createdAt, updatedAt, isVerified, email, imgUrl } 
-                  user.token = tokens;   
-                  user.cartcount = countcart             
+                  user.profile = { id,fullName, username, role, roleId, branch, branchId,  approvalLevel, approvalTitle } 
+                  user.token = tokens;                
                   res.status(200).send(user)                         
           }else{
               res.status(400).json({message:"Incorrect Login Details"})

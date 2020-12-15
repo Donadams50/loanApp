@@ -5,9 +5,9 @@ dotenv.config();
   // require('./app/cloudinary/cloudinary.js')
   //   const upload = require(' ./app/cloudinary/multer.js');
 
-exports.signToken= (id, fName, lName, Username, isadmin, phoneNumber, createdat, updatedat, isverified, userEmail)=> {
+exports.signToken= (id, fullname, userName, Role, roleID, Branch, branchID,  ApprovalLevel, ApprovalTitle)=> {
     const key = process.env.SECRET_KEY;
-    const token = jwt.sign({ id: id, firstName:fName , lastName:lName, username: Username,isAdmin:isadmin , phoneNo:phoneNumber, createdAt:createdat , updatedAt:updatedat, isVerified: isverified, email:userEmail  }, key, { expiresIn: '1h' });
+    const token = jwt.sign({ id: id, fullName:fullname , username:userName, role: Role, roleId:roleID , branch:Branch, branchId:branchID , approvalLevel:ApprovalLevel, approvalTitle: ApprovalTitle  }, key, { expiresIn: '1h' });
     return token;
   }
 
