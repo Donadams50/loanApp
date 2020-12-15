@@ -29,14 +29,7 @@ db.mongoose
   });
 
  require("./app/members/members.routes.js")(app)
- require("./app/products/products.routes.js")(app)
- require("./app/orders/orders.routes.js")(app)
- require("./app/skinIssues/skinissues.routes.js")(app)
- require("./app/bespoke/bespoke.routes.js")(app)
- require("./app/cart/cart.routes.js")(app)
- require("./app/questionaire/questionaire.routes.js")(app)
- require("./app/requestedproduct/requestedproduct.routes.js")(app)
- require("./app/notification/notification.routes.js")(app)
+ 
 
 
 
