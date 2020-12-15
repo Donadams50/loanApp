@@ -15,7 +15,7 @@ const axios = require('axios')
 const db = require("./app/mongoose");
 console.log(db.url)
 db.mongoose
-  .connect(db.url, {
+  .connect(db.url, { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
      useFindAndModify: false 
