@@ -2,8 +2,7 @@ const  jwt =require('jsonwebtoken');
 const dotenv=require('dotenv');
 
 dotenv.config();
-  // require('./app/cloudinary/cloudinary.js')
-  //   const upload = require(' ./app/cloudinary/multer.js');
+  
 
 exports.signToken= (id, fullname, userName, Role, roleID, Branch, branchID,  ApprovalLevel, ApprovalTitle)=> {
     const key = process.env.SECRET_KEY;
