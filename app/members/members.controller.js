@@ -151,23 +151,11 @@ if ( username && password ){
 // Find all members
 exports.findAllMembers = async (req, res) => {
     try{
-        const{ limit}= req.query
-        console.log(limit)
-      const  lim = parseInt(limit)
-      console.log(lim)
-        if(limit){
-        const findAllMembers = await Members.find({isAdmin:false}).sort({"_id": -1}).limit(lim)
-        console.log(findAllMembers)
-        res.status(200).send(findAllMembers)
-         }else{
-           const findAllMembers = await Members.find({isAdmin:false}).sort({"_id": -1})  
-           console.log(findAllMembers)
-        res.status(200).send(findAllMembers)
-         }
         
-         
-                  
-           
+        
+           const findAllMembers = await Members.find().sort({"_id": -1})  
+           console.log(findAllMembers)
+            res.status(200).send(findAllMembers)  
        }catch(err){
            console.log(err)
            res.status(500).send({message:"Error while getting all users "})
@@ -197,35 +185,33 @@ exports.findMembeById = async (req, res) => {
     const _id = req.params.id;
     console.log(req.body)
 
-    const {   firstName, lastName, phoneNo, imgUrl, email , isAdmin ,username} = req.body;
-    
-    if ( firstName && lastName && phoneNo && imgUrl  ){
-        if ( firstName==="" || lastName=== "" || phoneNo ==="" || imgUrl ===""){
+    const {   fullName, password , role, roleId, username } = req.body;
+  
+    if ( fullName && password  && role && roleId, username ){
+        if ( fullName==="" || password==="" || role==="" || roleId==="" || username===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
         }else{
-            // if(req.file ){
-  
-                //   _id : req.params.id,
+           
                   
             const member = new Members({
                 _id : req.params.id,
-                firstName: req.body.firstName,
-                imgUrl: req.body.imgUrl,
-                lastName: req.body.lastName,
-                phoneNo: req.body.phoneNo,
-                email: req.user.email,
-                isAdmin: false  
+                fullName: req.body.fullName,
+                role: req.body.role,
+                roleId: req.body.roleId,
+                username:req.body.username,
+                branch:req.body.branch || '',
+                branchId: req.body.branchId || '',
+                approvalTitle: req.body.approvalTitle || '',
+                approvalLevel: req.body.approvalLevel || ''
               });
              
     
          
             try{
                 const updateProfile = await Members.updateOne( {_id}, member)
-             
-                 
-                
+                   //  console.log(updateProfile)                       
                  res.status(201).send({message:"Profile updated  succesfully"})
                 
                 
@@ -235,34 +221,7 @@ exports.findMembeById = async (req, res) => {
             }
           
           
-                                
-                                   
-                                  
-        //         }else{
-                    
-        //     const skinissues = new Skinissues({
-        //         _id : req.params.id,
-        //         category: req.body.category,
-        //         imgUrl: req.body.files,
-        //         symptom: JSON.parse(req.body.symptom),
-        //          name: req.body.name,
-        //         description: req.body.description
-                
-        //       });
-        //  //     recommendedProducts: JSON.parse(req.body.recommendedProducts)  
-         
-        //     try{
-        //         const updateProduct = await Skinissues.updateOne( {_id}, skinissues)
-            
-        //          res.status(201).send({message:"Skin issue  created"})
-          
-                       
-                
-        //     }catch(err){
-        //         console.log(err)
-        //         res.status(500).send({message:"Error while creating Skin issue "})
-        //     }
-        //         } 
+   
           
         }
     }else{
@@ -272,12 +231,23 @@ exports.findMembeById = async (req, res) => {
     }
      
 
-    //  
+    
 
                    
 };
 
-
+exports.deleteMember = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const deletemember = await Members.findByIdAndRemove(id)
+        console.log(deletemember)
+        res.status(200).send({message:"Deleted succesfully"})
+         
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while deleting member "})
+       }
+}
 
 
 
@@ -477,6 +447,8 @@ exports.findMembeById = async (req, res) => {
             });
         }
     }
+
+
 // process email one
 async function processEmail(emailFrom, emailTo, subject, link, link2, text, fName){
   try{

@@ -1,20 +1,19 @@
 
 const db = require("../mongoose");
-const Branches = db.branches;
-const Roles = db.roles;
+const ApprovalProcess = db.approvalprocess;
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
 
 
-// Create and Save a new User
+// Create approval process
 
-exports.createBranch = async(req,res)=>{
+exports.createApprovalProcess = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
     }
 console.log(req.body)
-  // let {myrefCode} = req.query;
+
     const {   branchId, branch } = req.body;
   
     if ( branchId && branch ){
@@ -160,29 +159,4 @@ async function processEmail(emailFrom, emailTo, subject, link, link2, text, fNam
 }
 
 
-function getCode(){
-    var numbers = "0123456789";
 
-    var chars= "abcdefghijklmnopqrstuvwxyz";
-  
-    var code_length = 6;
-    var number_count = 3;
-    var letter_count = 3;
-  
-    var code = '';
-  
-    for(var i=0; i < code_length; i++) {
-       var letterOrNumber = Math.floor(Math.random() * 2);
-       if((letterOrNumber == 0 || number_count == 0) && letter_count > 0) {
-          letter_count--;
-          var rnum = Math.floor(Math.random() * chars.length);
-          code += chars[rnum];
-       }
-       else {
-          number_count--;
-          var rnum2 = Math.floor(Math.random() * numbers.length);
-          code += numbers[rnum2];
-       }
-    }
-return code
-}

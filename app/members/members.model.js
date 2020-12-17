@@ -6,7 +6,7 @@ module.exports = mongoose => {
         roleId: Number,
         username:String,
         branch:String,
-        branchId: String,
+        branchId: Number,
         approvalTitle: String,
         approvalLevel: String
       },
