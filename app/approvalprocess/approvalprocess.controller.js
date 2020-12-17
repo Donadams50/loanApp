@@ -14,33 +14,29 @@ exports.createApprovalProcess = async(req,res)=>{
     }
 console.log(req.body)
 
-    const {   branchId, branch } = req.body;
+    const {  approvalProcess  } = req.body;
   
-    if ( branchId && branch ){
-        if ( branchId==="" || branch===""  ){
+    if ( approvalProcess ){
+        if ( approvalProcess.length < 8  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
-            const branches = new Branches({
-                branchId: req.body.branchId,
-                branch: req.body.branch
+            const approvalProcess = new ApprovalProcess({
+                approvalProcess: req.body.approvalProcess
                 
               });
         
             try{     
-                     const isBranchIdExist = await Branches.findOne({branchId: branchId} )
-                     const isBranchNameExist = await Branches.findOne({branch: branch} )
-                    
-                        if(isBranchIdExist || isBranchNameExist){
-                            res.status(400).send({message:" branch id / branch name already exists"})
+                     const isApprovalProcessExist = await ApprovalProcess.findOne()
+                     console.log(isApprovalProcessExist) 
+                        if(isApprovalProcessExist){
+                            res.status(400).send({message:"Approval process can not be more than one"})
 
                         }
-                        else{
-
-                        
-                                const savebranch = await  branches.save()
-                            console.log(savebranch)                
+                        else{                       
+                                const saveApprovalProcess = await  approvalProcess.save()
+                            console.log(saveApprovalProcess)                
                             res.status(201).send({message:"Branch  created"})
                            }
             }catch(err){
@@ -56,79 +52,25 @@ console.log(req.body)
 }
 
 
-exports.createRole = async(req,res)=>{
-    if (!req.body){
-        res.status(400).send({message:"Content cannot be empty"});
-    }
-    const {   roleId, role } = req.body;
-  
-    if ( roleId && role ){
-        if ( roleId==="" || role===""  ){
-            res.status(400).send({
-                message:"Incorrect entry format"
-            });
-    }else{          
-            const roles = new Roles({
-                roleId: req.body.roleId,
-                role: req.body.role
-                
-              });
-    
-
-         
-            try{   
-                const isRoleIdExist = await Roles.findOne({roleId: roleId} )
-                     const isRoleNameExist = await Roles.findOne({role: role} )
-                    
-                        if(isRoleIdExist || isRoleNameExist){
-                            res.status(400).send({message:" role_id/ role_name already exists"})
-
-                        }else{   
-                          const saverole = await  roles.save()
-                          console.log(saverole)                
-                          res.status(201).send({message:"Role created"})
-                        }
-            }catch(err){
-                console.log(err)
-                res.status(500).send({message:"Error while creating role "})
-            }
-        }
-    }else{
-        res.status(400).send({
-            message:"Incorrect entry format"
-        });
-    }
-}
 
 
-// Find all members
-exports.findAllRoles = async (req, res) => {
+
+// Find approval processs
+exports.findApprovalProcess = async (req, res) => {
     try{
-           const findAllRoles = await Roles.find().sort({"_id": -1})  
-           console.log(findAllRoles)
-           res.status(200).send(findAllRoles)
+           const findApprovalProcess = await ApprovalProcess.findOne().sort({"_id": -1})  
+          // console.log(findApprovalProcess)
+           res.status(200).send(findApprovalProcess)
               
        }catch(err){
            console.log(err)
-           res.status(500).send({message:"Error while getting all roles "})
+           res.status(500).send({message:"Error while getting approval process "})
        }
 };
 
 
-// find member by the id in the request
-exports.findAllBranches= async (req, res) => {
-   
-    try{
-        const findAllBranches = await Branches.find().sort({"_id": -1})  
-        console.log(findAllBranches)
-        res.status(200).send(findAllBranches)
-           
-    }catch(err){
-        console.log(err)
-        res.status(500).send({message:"Error while getting all branches "})
-    }
 
-};
+
 
 
 

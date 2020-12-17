@@ -84,7 +84,7 @@ console.log(req.body)
     }
 }
 
-// Retrieve all Tutorials from the database.
+// Login user
 exports.signIn = async(req, res) => {
   if (!req.body){
     res.status(400).send({message:"Content cannot be empty"});
@@ -163,7 +163,7 @@ exports.findAllMembers = async (req, res) => {
 };
 
 
-// find member by the id in the request
+// find member by the id 
 exports.findMembeById = async (req, res) => {
    try{
        
@@ -179,8 +179,9 @@ exports.findMembeById = async (req, res) => {
        }
 
 };
+
 // Update members details
- // Update a product
+ 
  exports.updateMember = async(req, res) => {
     const _id = req.params.id;
     console.log(req.body)
@@ -235,7 +236,7 @@ exports.findMembeById = async (req, res) => {
 
                    
 };
-
+// delete a user
 exports.deleteMember = async (req, res) => {
     try{
         const id = req.params.id;

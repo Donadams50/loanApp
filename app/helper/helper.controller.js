@@ -7,7 +7,7 @@ const sendemail = require('../helpers/emailhelper.js');
 const uuid = require('uuid')
 
 
-// Create and Save a new User
+// Create a new branch
 
 exports.createBranch = async(req,res)=>{
     if (!req.body){
@@ -57,6 +57,7 @@ console.log(req.body)
 }
 
 
+// Create a new role
 exports.createRole = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -102,7 +103,7 @@ exports.createRole = async(req,res)=>{
 }
 
 
-// Find all members
+// Find all roles
 exports.findAllRoles = async (req, res) => {
     try{
            const findAllRoles = await Roles.find().sort({"_id": -1})  
@@ -116,7 +117,7 @@ exports.findAllRoles = async (req, res) => {
 };
 
 
-// find member by the id in the request
+// find all branches
 exports.findAllBranches= async (req, res) => {
    
     try{

@@ -9,4 +9,5 @@ module.exports = app => {
     app.get("/members",  verifyToken, isAdmin,  member.findAllMembers)
     app.put("/member/:id", verifyToken, isAdmin,  member.updateMember)
     app.delete("/member/:id", verifyToken,  isAdmin,   member.deleteMember)
+    app.get("/members/:id",  verifyToken, isAdmin,  member.findMembeById)
 }
