@@ -2,7 +2,7 @@ module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
         roleId: Number,
-        roleName:String,
+        role:String,
       },
       { timestamps: true }
     );

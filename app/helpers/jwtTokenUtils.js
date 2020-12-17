@@ -33,12 +33,12 @@ exports.signToken= (id, fullname, userName, Role, roleID, Branch, branchID,  App
   exports.isAdmin= (req, res, next)=> { 
     const token = req.headers.authorization || req.params.token;
   
-        if (req.user.isAdmin === true) {
-         console.log(req.user.isAdmin) 
+        if (req.user.roleId === 1) {
+         console.log(req.user.role) 
           next();
           
         }else{
-          console.log(req.user.isAdmin) 
+          console.log(req.user.role) 
           res.status(401).json({ status: 401, error: 'Unauthorized to access this resource' });
           
         }

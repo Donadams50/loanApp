@@ -15,27 +15,35 @@ exports.createBranch = async(req,res)=>{
     }
 console.log(req.body)
   // let {myrefCode} = req.query;
-    const {   branchId, branchName } = req.body;
+    const {   branchId, branch } = req.body;
   
-    if ( branchId && branchName ){
-        if ( branchId==="" || branchName===""  ){
+    if ( branchId && branch ){
+        if ( branchId==="" || branch===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
             const branches = new Branches({
                 branchId: req.body.branchId,
-                branchName: req.body.branchName
+                branch: req.body.branch
                 
               });
-            
+        
+            try{     
+                     const isBranchIdExist = await Branches.findOne({branchId: branchId} )
+                     const isBranchNameExist = await Branches.findOne({branch: branch} )
+                    
+                        if(isBranchIdExist || isBranchNameExist){
+                            res.status(400).send({message:" branch id / branch name already exists"})
 
-         
-            try{       
-                 const savebranch = await  branches.save()
-                   console.log(savebranch)                
-                   res.status(201).send({message:"Branch  created"})
-                
+                        }
+                        else{
+
+                        
+                                const savebranch = await  branches.save()
+                            console.log(savebranch)                
+                            res.status(201).send({message:"Branch  created"})
+                           }
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while creating branch "})
@@ -53,29 +61,34 @@ exports.createRole = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
     }
-console.log(req.body)
-  // let {myrefCode} = req.query;
-    const {   roleId, roleName } = req.body;
+    const {   roleId, role } = req.body;
   
-    if ( roleId && roleName ){
-        if ( roleId==="" || roleName===""  ){
+    if ( roleId && role ){
+        if ( roleId==="" || role===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
             const roles = new Roles({
                 roleId: req.body.roleId,
-                roleName: req.body.roleName
+                role: req.body.role
                 
               });
     
 
          
-            try{       
-                 const saverole = await  roles.save()
-                   console.log(saverole)                
-                   res.status(201).send({message:"Role created"})
-                
+            try{   
+                const isRoleIdExist = await Branches.findOne({roleId: roleId} )
+                     const isRoleNameExist = await Branches.findOne({role: role} )
+                    
+                        if(isRoleIdExist || isRoleNameExist){
+                            res.status(400).send({message:" branch id / branch name already exists"})
+
+                        }else{   
+                          const saverole = await  roles.save()
+                          console.log(saverole)                
+                          res.status(201).send({message:"Role created"})
+                        }
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while creating role "})
