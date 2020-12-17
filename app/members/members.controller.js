@@ -18,10 +18,10 @@ exports.create = async(req,res)=>{
     }
 console.log(req.body)
   // let {myrefCode} = req.query;
-    const {   fullName, password , role, roleId, username } = req.body;
+    const {   fullName, password , role, roleId, username, parent } = req.body;
   
-    if ( fullName && password  && role && roleId, username ){
-        if ( fullName==="" || password==="" || role==="" || roleId==="" || username===""  ){
+    if ( fullName && password  && role && roleId &&username && parent ){
+        if ( fullName==="" || password==="" || role==="" || roleId==="" || username==="" || parent==="" ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -36,7 +36,7 @@ console.log(req.body)
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
                 approvalTitle: req.body.approvalTitle || '',
-                approvalLevel: req.body.approvalLevel || ''
+                parent: req.body.parent
                 
               });
               const auths = new Auths({
@@ -186,10 +186,10 @@ exports.findMembeById = async (req, res) => {
     const _id = req.params.id;
     console.log(req.body)
 
-    const {   fullName, password , role, roleId, username } = req.body;
+    const {   fullName, password , role, roleId, username, parent} = req.body;
   
-    if ( fullName && password  && role && roleId, username ){
-        if ( fullName==="" || password==="" || role==="" || roleId==="" || username===""  ){
+    if ( fullName && password  && role && roleId&& username&& parent){
+        if ( fullName==="" || password==="" || role==="" || roleId==="" || username==="" || parent===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -205,7 +205,7 @@ exports.findMembeById = async (req, res) => {
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
                 approvalTitle: req.body.approvalTitle || '',
-                approvalLevel: req.body.approvalLevel || ''
+                parent:req.body.parent
               });
              
     
@@ -230,10 +230,6 @@ exports.findMembeById = async (req, res) => {
             message:"Incorrect entry format"
         });
     }
-     
-
-    
-
                    
 };
 // delete a user

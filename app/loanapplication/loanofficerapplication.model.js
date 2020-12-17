@@ -1,14 +1,14 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        fullName: String,
-        role: String,
-        roleId: Number,
-        username:String,
+        
+        form:Object,
+        status:String,
         branch:String,
         branchId: Number,
-        approvalTitle: String,
-        parent: String
+        assignedTo: String,
+        signed:Array,
+        customerApplicationId:String,
       },
       { timestamps: true }
     );
@@ -19,8 +19,8 @@ module.exports = mongoose => {
       return object;
     });
   
-    const Profile = mongoose.model("profile", schema);
-    return Profile;
+    const LoanOfficerApplication = mongoose.model("loanofficerapplication", schema);
+    return LoanOfficerApplication;
   };
   
   

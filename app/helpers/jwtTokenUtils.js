@@ -46,3 +46,17 @@ exports.signToken= (id, fullname, userName, Role, roleID, Branch, branchID,  App
   }
 
   
+  exports.isLoanOfficer= (req, res, next)=> { 
+    const token = req.headers.authorization || req.params.token;
+  
+        if (req.user.roleId === 10) {
+         console.log(req.user.role) 
+          next();
+          
+        }else{
+          console.log(req.user.role) 
+          res.status(401).json({ status: 401, error: 'Unauthorized to access this resource' });
+          
+        }
+    
+  }

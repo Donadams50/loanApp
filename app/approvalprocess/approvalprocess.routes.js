@@ -6,7 +6,7 @@ module.exports = app => {
 
   app.post("/approvalprocess", verifyToken, isAdmin, approvalProcess.createApprovalProcess)
   app.get("/approvalprocess",  verifyToken, isAdmin,  approvalProcess.findApprovalProcess)
-//  app.put("/approvalprocesses/:id", verifyToken, isAdmin,  approvalProcess.updateApprovalProcess)
-//  app.delete("/approvalprocesses/:id", verifyToken,  isAdmin,   approvalProcess.deleteApprovalProcess)
+  app.put("/approvalprocess/:id", verifyToken, isAdmin,  approvalProcess.updateApprovalProcess)
+  app.delete("/approvalprocess/:id", verifyToken,  isAdmin,   approvalProcess.deleteApprovalProcess)
 
 }

@@ -31,6 +31,7 @@ db.mongoose
  require("./app/members/members.routes.js")(app)
  require("./app/helper/helper.routes.js")(app)
  require("./app/approvalprocess/approvalprocess.routes.js")(app)
+ require("./app/loanapplication/loanapplication.routes.js")(app)
 
 
 

@@ -51,11 +51,7 @@ console.log(req.body)
     }
 }
 
-
-
-
-
-// Find approval processs
+// Find approval process
 exports.findApprovalProcess = async (req, res) => {
     try{
            const findApprovalProcess = await ApprovalProcess.findOne().sort({"_id": -1})  
@@ -68,7 +64,72 @@ exports.findApprovalProcess = async (req, res) => {
        }
 };
 
+//update approval process
+exports.updateApprovalProcess = async(req, res) => {
+    const _id = req.params.id;
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+console.log(req.body)
 
+    const {  approvalProcess  } = req.body;
+  
+    if ( approvalProcess ){
+        if ( approvalProcess.length < 8  ){
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+    }else{
+           
+                  
+        const approvalProcess = new ApprovalProcess({
+            _id : req.params.id,
+            approvalProcess: req.body.approvalProcess
+            
+          });
+    
+    
+         
+            try{
+                const updateapprovalProcess = await ApprovalProcess.updateOne( {_id}, approvalProcess)
+                   //  console.log(updateProfile)                       
+                 res.status(201).send({message:"Approval process updated  succesfully"})
+                
+                
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while updating Approval process  "})
+            }
+          
+          
+   
+          
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+     
+
+    
+
+                   
+};
+
+// delete aproval process
+exports.deleteApprovalProcess = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const deletapprovalprocess= await ApprovalProcess.findByIdAndRemove(id)
+        console.log(deletapprovalprocess)
+        res.status(200).send({message:"Deleted succesfully"})
+         
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while deleting approval process "})
+       }
+}
 
 
 
