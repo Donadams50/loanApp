@@ -6,7 +6,7 @@ module.exports = app => {
     // const upload = require('../Cloudinary/multer.js');
 
         //console.log("routes")
- app.post("/member", member.create)
+ app.post("/member", verifyToken, isAdmin, member.create)
  app.post("/authenticate", member.signIn)
 //  app.get("/members",  verifyToken, isAdmin,  member.findAllMembers)
 //  app.get("/members/:id",  verifyToken, isAdmin,  member.findMembeById)
