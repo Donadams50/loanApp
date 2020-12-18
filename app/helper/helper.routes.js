@@ -5,7 +5,7 @@ module.exports = app => {
    
  app.post("/branch", verifyToken, isAdmin, helper.createBranch)
  app.post("/role", verifyToken,  isAdmin , helper.createRole)
- app.get("/branches",  verifyToken, isAdmin,  helper.findAllBranches)
+ app.get("/branches",   helper.findAllBranches)
  app.get("/roles",  verifyToken, isAdmin,  helper.findAllRoles)
  //app.put("/role/:id", verifyToken, isAdmin,  helper.updateRoler)
  //app.delete("/role/:id", verifyToken,  isAdmin,   helper.deleteRole)

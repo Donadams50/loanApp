@@ -6,7 +6,7 @@ module.exports = app => {
 
      app.post("/customerapplication", loanApplication.customerApplyLoan)
      app.post("/loanofficerapplication",  verifyToken, isLoanOfficer,  loanApplication.loanOfficerApplyLoan)
-     app.get("/initaitedloan", verifyToken, isLoanOfficer,  loanApplication.loanOfficerGetLoan)
+     app.get("/initaitedloan", verifyToken, isLoanOfficer,  loanApplication.loanOfficerGetALLLoan)
 //   app.delete("/approvalprocess/:id", verifyToken,  isAdmin,   approvalProcess.deleteApprovalProcess)
 
 }

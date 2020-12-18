@@ -15,25 +15,25 @@ exports.customerApplyLoan = async(req,res)=>{
     }
 console.log(req.body)
 
-    const { branch, branchId, form,   } = req.body;
+    const {  form,   } = req.body;
   
-    if ( approvalProcess, branch, branchId){
-        if ( form && branch && branchId  ){
+    if ( form.branchName && form.firstName && form.lastName && form.nationality && form.address && form.pn  && form.email && form.guarantorName && form.guarantorAddress  && form.guarantorPn &&  form.guarantotBusiness &&  form.guarantorBvn && form.customerOccupation && form.customerOrg  && form.empStatus  && form.customerOfficeAddress && form.customerOrgPn && form.netMonthlyIncome && form.customerCardNo  && form.customerPassword  && form.month  && form.loanAmount && form.loanPurpose && form.loanDescription  && form.tenor  && form.customerAcctNo && form.existingBank  && form.existingType  && form.customerId  ){
+        if ( form.branchName==="" || form.firstName==="" ||form.lastName==="" || form.nationality ==="" || form.address ==="" ||form.pn ==="" || form.email ==="" || form.guarantorName ==="" || form.guarantorAddress ==="" ||form.guarantorPn==="" || form.guarantotBusiness==="" ||  form.guarantorBvn ==="" || form.customerOccupation ==="" || form.customerOrg ==="" ||form.empStatus  ==="" || form.customerOfficeAddress==="" || form.customerOrgPn ==="" || form.netMonthlyIncome ==="" ||form.customerCardNo  ==="" || form.customerPassword  ==="" || form.month  ==="" || form.loanAmount ==="" || form.loanPurpose ==="" ||form.loanDescription ==="" || form.tenor ==="" ||form.customerAcctNo ==="" || form.existingBank ==="" || form.existingType  ==="" || form.customerId  ==="" ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
-            const customerApplication = new CustomerApplication({
+            const customerapplication = new CustomerApplication({
                 form: req.body.form,
-                branch:req.body.branch || '',
-                branchId: req.body.branchId || '',
+                branch:req.body.form.branch || '',
+                branchId: req.body.form.branchId || '',
                 status: "Initiated",
                 assignedTo:""
                 
               });
         
             try{                                              
-                    const customerApplication = await  customerApplication.save()
+                    const customerApplication = await  customerapplication.save()
                     console.log(customerApplication)                
                     res.status(201).send({message:"Loan request initaited"})
                            
@@ -111,7 +111,7 @@ console.log(req.body)
     }
 }
 // Find approval process
-exports.loanOfficerGetLoan = async (req, res) => {
+exports.loanOfficerGetALLLoan = async (req, res) => {
     try{
         const status = "Initiated"
         const branch = req.query.branch
@@ -125,72 +125,9 @@ exports.loanOfficerGetLoan = async (req, res) => {
        }
 };
 
-//update approval process
-exports.updateApprovalProcess = async(req, res) => {
-    const _id = req.params.id;
-    if (!req.body){
-        res.status(400).send({message:"Content cannot be empty"});
-    }
-console.log(req.body)
 
-    const {  approvalProcess  } = req.body;
-  
-    if ( approvalProcess ){
-        if ( approvalProcess.length < 8  ){
-            res.status(400).send({
-                message:"Incorrect entry format"
-            });
-    }else{
-           
-                  
-        const approvalProcess = new ApprovalProcess({
-            _id : req.params.id,
-            approvalProcess: req.body.approvalProcess
-            
-          });
-    
-    
-         
-            try{
-                const updateapprovalProcess = await ApprovalProcess.updateOne( {_id}, approvalProcess)
-                   //  console.log(updateProfile)                       
-                 res.status(201).send({message:"Approval process updated  succesfully"})
-                
-                
-            }catch(err){
-                console.log(err)
-                res.status(500).send({message:"Error while updating Approval process  "})
-            }
-          
-          
-   
-          
-        }
-    }else{
-        res.status(400).send({
-            message:"Incorrect entry format"
-        });
-    }
-     
 
-    
 
-                   
-};
-
-// delete aproval process
-exports.deleteApprovalProcess = async (req, res) => {
-    try{
-        const id = req.params.id;
-        const deletapprovalprocess= await ApprovalProcess.findByIdAndRemove(id)
-        console.log(deletapprovalprocess)
-        res.status(200).send({message:"Deleted succesfully"})
-         
-       }catch(err){
-           console.log(err)
-           res.status(500).send({message:"Error while deleting approval process "})
-       }
-}
 
 
 
