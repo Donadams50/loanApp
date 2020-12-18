@@ -9,6 +9,7 @@ module.exports = app => {
      app.get("/initaitedloan", verifyToken, isLoanOfficer,  loanApplication.loanOfficerGetAllLoan)
      app.get("/assignedloan", verifyToken, isApproval,  loanApplication.approvalGetAllLoan)
      app.post("/approvalrecommendation",  verifyToken, isApproval,  loanApplication.approvalRecommendation)
-//   app.delete("/approvalprocess/:id", verifyToken,  isAdmin,   approvalProcess.deleteApprovalProcess)
+     app.post("/declinerecommendation",  verifyToken, isApproval,  loanApplication.declineRecommendation)
+
 
 }

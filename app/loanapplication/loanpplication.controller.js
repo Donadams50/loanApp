@@ -195,7 +195,7 @@ exports.approvalRecommendation= async(req,res)=>{
                         console.log(isLoanOngoing.status) 
                         if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined"){
                             res.status(400).send({
-                                message:"This loan has been completed"
+                                message:"This loan has been completed or declined "
                             });
 
                         }
@@ -235,6 +235,61 @@ exports.approvalRecommendation= async(req,res)=>{
     }
 }
 
+// approval declines  and add remark
+exports.declineRecommendation= async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+     console.log(req.body)
+
+    const {  remark , id } = req.body;
+  
+        if ( remark, id ){
+            if ( remark==="" || id=== ""  ){
+    
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+        }else{          
+                 
+                   try{     
+
+                        const isLoanOngoing = await LoanOfficerApplication.findOne({_id: id} )
+                        console.log(isLoanOngoing.status) 
+                        if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined"){
+                            res.status(400).send({
+                                message:"This loan has been completed or declined"
+                            });
+
+                        }
+                        else{
+                            const _id = req.body.id
+                            
+                            console.log("declined")
+                            const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
+                            const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                            const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Declined" });         
+                            res.status(200).send({message:"Loan declined  successfully"})
+
+                            
+                           
+                    }            
+                    
+                  
+                   
+                
+                           
+               }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating loan request "})
+              }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
 
 
 
