@@ -115,15 +115,15 @@ if ( username && password ){
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
-         const {  fullName, username, role, roleId, branch, branchId,  approvalLevel, approvalTitle } = User
+         const {  fullName, username, role, roleId, branch, branchId, approvalTitle, parent } = User
             const isMatch = await passwordUtils.comparePassword(password.toLowerCase(), retrievedPassword);
             console.log(isMatch )
              if (isMatch){
-              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  approvalLevel, approvalTitle) 
+              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  approvalTitle, parent) 
         
             let user = {}
              
-                  user.profile = { id,fullName, username, role, roleId, branch, branchId,  approvalLevel, approvalTitle } 
+                  user.profile = { id,fullName, username, role, roleId, branch, branchId,   approvalTitle , parent} 
                   user.token = tokens;                
                   res.status(200).send(user)                         
           }else{

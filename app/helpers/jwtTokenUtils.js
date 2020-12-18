@@ -4,9 +4,9 @@ const dotenv=require('dotenv');
 dotenv.config();
   
 
-exports.signToken= (id, fullname, userName, Role, roleID, Branch, branchID,  ApprovalLevel, ApprovalTitle)=> {
+exports.signToken= (id, fullname, userName, Role, roleID, Branch, branchID,   ApprovalTitle, Parent)=> {
     const key = process.env.SECRET_KEY;
-    const token = jwt.sign({ id: id, fullName:fullname , username:userName, role: Role, roleId:roleID , branch:Branch, branchId:branchID , approvalLevel:ApprovalLevel, approvalTitle: ApprovalTitle  }, key, { expiresIn: '1h' });
+    const token = jwt.sign({ id: id, fullName:fullname , username:userName, role: Role, roleId:roleID , branch:Branch, branchId:branchID , approvalTitle: ApprovalTitle, parent:Parent }, key, { expiresIn: '1h' });
     return token;
   }
 
@@ -50,6 +50,22 @@ exports.signToken= (id, fullname, userName, Role, roleID, Branch, branchID,  App
     const token = req.headers.authorization || req.params.token;
   
         if (req.user.roleId === 10) {
+         console.log(req.user.role) 
+          next();
+          
+        }else{
+          console.log(req.user.role) 
+          res.status(401).json({ status: 401, error: 'Unauthorized to access this resource' });
+          
+        }
+    
+  }
+
+  
+  exports.isApproval= (req, res, next)=> { 
+    const token = req.headers.authorization || req.params.token;
+  
+        if (req.user.roleId === 5) {
          console.log(req.user.role) 
           next();
           

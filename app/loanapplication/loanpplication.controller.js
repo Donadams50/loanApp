@@ -7,7 +7,7 @@ const sendemail = require('../helpers/emailhelper.js');
 const uuid = require('uuid')
 
 
-// Create approval process
+// Customer loan application
 
 exports.customerApplyLoan = async(req,res)=>{
     if (!req.body){
@@ -49,6 +49,7 @@ console.log(req.body)
     }
 }
 
+// loan officer submit loan or apply newly
 exports.loanOfficerApplyLoan = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -72,33 +73,43 @@ console.log(req.body)
             try{     
                 if (form.customerApplicationId  ){
                     console.log("old") 
-                    const loanofficerApplication = new LoanOfficerApplication({
-                        form: req.body.form,
-                        branch:req.body.form.branch || '',
-                        branchId: req.body.form.branchId || '',
-                        status: "On_Going",
-                        assignedTo: req.user.parent,
-                        loanOfficer: req.user.id,
-                        signed: {"name": req.user.fullName, "remark": req.body.remark, "title": req.user.approvalTitle, "user_id":req.user.id},
-                        customerApplicationId: req.body.form.customerApplicationId 
-                        
-                      });
-                    const loanofficerApplicationsave = await  loanofficerApplication.save()
-                    console.log(req.body.form.customerApplicationId) 
+                        const isLoanAssigned = await CustomerApplication.findOne({_id: req.body.form.customerApplicationId} )
+                        console.log(isLoanAssigned.status) 
+                        if(isLoanAssigned.status === "Assigned"){
+                            res.status(400).send({
+                                message:"This loan has been assigned to another loan officer"
+                            });
+
+                        }
+                        else{
+                        const loanofficerApplication = new LoanOfficerApplication({
+                            form: req.body.form,
+                            branch:req.body.form.branch || '',
+                            branchId: req.body.form.branchId || '',
+                            status: "On_Going",
+                            assignedTo: req.user.parent,
+                            loanOfficer: req.user.id,
+                            signed: {"name": req.user.fullName, "remark": "valid", "title": "loan_officer", "user_id":req.user.id},
+                            customerApplicationId: req.body.form.customerApplicationId ,
+                            declinedBy: ''
+                            
+                            });
+                        const loanofficerApplicationsave = await  loanofficerApplication.save()
+                    
                        if(loanofficerApplicationsave){
+                        console.log(req.body.form.customerApplicationId) 
                         // const updateCustomerForm = new CustomerApplication({
                         const     _id = req.body.form.customerApplicationId
-                        //     status: "Assigned",
-                        //     loanOfficer:req.user.id
-                            
-                        //   });
-                        const updateOrder = await Orders.findOneAndUpdate({ _id }, { status: 'Completed' });
-                          const updatecustomerform = await CustomerApplication.updateOne( {_id}, updateCustomerForm)
-                          res.status(201).send({message:"Loan request submitted"})
+                       
+                        const updatecustomerform = await CustomerApplication.findOneAndUpdate({ _id }, { status: 'Assigned' });
+                        const updatecustomerformone = await CustomerApplication.findOneAndUpdate({ _id }, { loanOfficer: req.user.id });
+                        console.log("old") 
+                        console.log(updatecustomerform) 
+                          res.status(201).send({message:"Loan request accepted submitted"})
                        }else{
                         res.status(500).send({message:"Error while creating loan request "})
                        }
-                                   
+                    }            
                     
                   } else{    
                     console.log("new")  
@@ -109,8 +120,9 @@ console.log(req.body)
                         status: "On_Going",
                         assignedTo: req.user.parent,
                         loanOfficer: req.user.id,
-                        signed: {"name": req.user.fullName, "remark": req.body.remark, "title": req.user.approvalTitle, "user_id":req.user.id},
-                        customerApplicationId: req.body.form.customerApplicationId || ''
+                        signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
+                        customerApplicationId: req.body.form.customerApplicationId || '',
+                        declinedBy: ''
                         
                       });                                  
                     const loanofficerApplicationsave = await  loanofficerApplication.save()
@@ -129,8 +141,8 @@ console.log(req.body)
         });
     }
 }
-// Find approval process
-exports.loanOfficerGetALLLoan = async (req, res) => {
+// Find all  initiated loan for loan officer
+exports.loanOfficerGetAllLoan = async (req, res) => {
     try{
         const status = "Initiated"
         const branch = req.query.branch
@@ -144,11 +156,84 @@ exports.loanOfficerGetALLLoan = async (req, res) => {
        }
 };
 
+// approval recommend  and give remark for loan
 
+exports.approvalGetAllLoan = async (req, res) => {
+    try{
+     //   const status = "Initiated"
+     //   const branch = req.query.branch
+           const getLoanAssignedToMe = await LoanOfficerApplication.find({assignedTo:req.user.id}).sort({"_id": -1})  
+           console.log(req.user.id)
+           res.status(200).send(getLoanAssignedToMe)
+              
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while getting approval process "})
+       }
+};
 
+// approval recommends and add remark
+exports.approvalRecommendation= async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+     console.log(req.body)
 
+    const {  remark , id } = req.body;
+  
+        if ( remark, id ){
+            if ( remark==="" || id=== ""  ){
+    
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+        }else{          
+                 
+                   try{     
 
+                        const isLoanOngoing = await LoanOfficerApplication.findOne({_id: id} )
+                        console.log(isLoanOngoing.status) 
+                        if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined"){
+                            res.status(400).send({
+                                message:"This loan has been completed"
+                            });
 
+                        }
+                        else{
+                            const _id = req.body.id
+                            if(req.user.parent === "None"){
+                                console.log("last")
+                            const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
+                            const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                           const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });         
+                            res.status(200).send({message:"Recommendation posted  successfully"})
+
+                            }else{
+                                console.log("still in process")
+                                const assignedTo= req.user.parent                  
+                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
+                                const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                                const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
+                                 res.status(200).send({message:"Recommendation posted  successfully"})
+                            }
+                           
+                    }            
+                    
+                  
+                   
+                
+                           
+               }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating loan request "})
+              }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
 
 
 
