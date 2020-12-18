@@ -6,7 +6,7 @@ module.exports = mongoose => {
         status:String,
         branch:String,
         branchId: Number,
-        assignedTo: String
+        loanOfficer: String
     
 
       },

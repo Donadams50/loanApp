@@ -15,7 +15,7 @@ exports.customerApplyLoan = async(req,res)=>{
     }
 console.log(req.body)
 
-    const {  form,   } = req.body;
+    const {  form   } = req.body;
   
     if ( form.branchName && form.firstName && form.lastName && form.nationality && form.address && form.pn  && form.email && form.guarantorName && form.guarantorAddress  && form.guarantorPn &&  form.guarantotBusiness &&  form.guarantorBvn && form.customerOccupation && form.customerOrg  && form.empStatus  && form.customerOfficeAddress && form.customerOrgPn && form.netMonthlyIncome && form.customerCardNo  && form.customerPassword  && form.month  && form.loanAmount && form.loanPurpose && form.loanDescription  && form.tenor  && form.customerAcctNo && form.existingBank  && form.existingType  && form.customerId  ){
         if ( form.branchName==="" || form.firstName==="" ||form.lastName==="" || form.nationality ==="" || form.address ==="" ||form.pn ==="" || form.email ==="" || form.guarantorName ==="" || form.guarantorAddress ==="" ||form.guarantorPn==="" || form.guarantotBusiness==="" ||  form.guarantorBvn ==="" || form.customerOccupation ==="" || form.customerOrg ==="" ||form.empStatus  ==="" || form.customerOfficeAddress==="" || form.customerOrgPn ==="" || form.netMonthlyIncome ==="" ||form.customerCardNo  ==="" || form.customerPassword  ==="" || form.month  ==="" || form.loanAmount ==="" || form.loanPurpose ==="" ||form.loanDescription ==="" || form.tenor ==="" ||form.customerAcctNo ==="" || form.existingBank ==="" || form.existingType  ==="" || form.customerId  ==="" ){
@@ -28,7 +28,7 @@ console.log(req.body)
                 branch:req.body.form.branch || '',
                 branchId: req.body.form.branchId || '',
                 status: "Initiated",
-                assignedTo:""
+                loanOfficer:""
                 
               });
         
@@ -55,37 +55,44 @@ exports.loanOfficerApplyLoan = async(req,res)=>{
     }
 console.log(req.body)
 
-    const { branch, branchId, form, customerApplicationId  } = req.body;
+    const {  form  } = req.body;
   
-    if ( approvalProcess && branch && branchId){
-        if ( form === "" || branch=== " " || branchId ==="" ){
+    // if ( form.branchName && form.firstName && form.lastName && form.nationality && form.address && form.pn  && form.email && form.guarantorName && form.guarantorAddress  && form.guarantorPn &&  form.guarantotBusiness &&  form.guarantorBvn && form.customerOccupation && form.customerOrg  && form.empStatus  && form.customerOfficeAddress && form.customerOrgPn && form.netMonthlyIncome && form.customerCardNo  && form.customerPassword  && form.month  && form.loanAmount && form.loanPurpose && form.loanDescription  && form.tenor  && form.customerAcctNo && form.existingBank  && form.existingType  && form.customerId  ){
+    //     if ( form.branchName==="" || form.firstName==="" ||form.lastName==="" || form.nationality ==="" || form.address ==="" ||form.pn ==="" || form.email ==="" || form.guarantorName ==="" || form.guarantorAddress ==="" ||form.guarantorPn==="" || form.guarantotBusiness==="" ||  form.guarantorBvn ==="" || form.customerOccupation ==="" || form.customerOrg ==="" ||form.empStatus  ==="" || form.customerOfficeAddress==="" || form.customerOrgPn ==="" || form.netMonthlyIncome ==="" ||form.customerCardNo  ==="" || form.customerPassword  ==="" || form.month  ==="" || form.loanAmount ==="" || form.loanPurpose ==="" ||form.loanDescription ==="" || form.tenor ==="" ||form.customerAcctNo ==="" || form.existingBank ==="" || form.existingType  ==="" || form.customerId  ==="" ){
+        if ( form ){
+            if ( form===""  ){
+    
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
-            const loanofficerApplication = new LoanOfficerApplication({
-                form: req.body.form,
-                branch:req.body.branch || '',
-                branchId: req.body.branchId || '',
-                status: "On_Going",
-                assignedTo: req.user.parent,
-                signed: {"name": req.user.fullName, "remark": req.body.remark, "title": req.user.approvalTitle, "user_id":req.user.id},
-                customerApplicationId: req.body.customerApplicationId || ''
-                
-              });
+           
               
         
             try{     
-                if (customerApplicationId){
-                    const loanofficerApplication = await  loanofficerApplication.save()
-                    console.log(loanofficerApplication) 
-                       if(loanofficerApplication){
-                        const updateCustomerForm = new CustomerApplication({
-                            _id : customerApplicationId,
-                            status: "Assigned",
-                            assignedTo:req.user.id
+                if (form.customerApplicationId  ){
+                    console.log("old") 
+                    const loanofficerApplication = new LoanOfficerApplication({
+                        form: req.body.form,
+                        branch:req.body.form.branch || '',
+                        branchId: req.body.form.branchId || '',
+                        status: "On_Going",
+                        assignedTo: req.user.parent,
+                        loanOfficer: req.user.id,
+                        signed: {"name": req.user.fullName, "remark": req.body.remark, "title": req.user.approvalTitle, "user_id":req.user.id},
+                        customerApplicationId: req.body.form.customerApplicationId 
+                        
+                      });
+                    const loanofficerApplicationsave = await  loanofficerApplication.save()
+                    console.log(req.body.form.customerApplicationId) 
+                       if(loanofficerApplicationsave){
+                        // const updateCustomerForm = new CustomerApplication({
+                        const     _id = req.body.form.customerApplicationId
+                        //     status: "Assigned",
+                        //     loanOfficer:req.user.id
                             
-                          });
+                        //   });
+                        const updateOrder = await Orders.findOneAndUpdate({ _id }, { status: 'Completed' });
                           const updatecustomerform = await CustomerApplication.updateOne( {_id}, updateCustomerForm)
                           res.status(201).send({message:"Loan request submitted"})
                        }else{
@@ -93,9 +100,21 @@ console.log(req.body)
                        }
                                    
                     
-                  } else{                                        
-                    const loanofficerApplication = await  loanofficerApplication.save()
-                    console.log(loanofficerApplication)                
+                  } else{    
+                    console.log("new")  
+                    const loanofficerApplication = new LoanOfficerApplication({
+                        form: req.body.form,
+                        branch:req.body.form.branch || '',
+                        branchId: req.body.form.branchId || '',
+                        status: "On_Going",
+                        assignedTo: req.user.parent,
+                        loanOfficer: req.user.id,
+                        signed: {"name": req.user.fullName, "remark": req.body.remark, "title": req.user.approvalTitle, "user_id":req.user.id},
+                        customerApplicationId: req.body.form.customerApplicationId || ''
+                        
+                      });                                  
+                    const loanofficerApplicationsave = await  loanofficerApplication.save()
+                    console.log(loanofficerApplicationsave)                
                     res.status(201).send({message:"Loan request submitted"})
                 }
                            
