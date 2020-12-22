@@ -36,7 +36,8 @@ console.log(req.body)
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
                 approvalTitle: req.body.approvalTitle || '',
-                parent: req.body.parent
+                parent: req.body.parent,
+                email: req.body.email
                 
               });
               const auths = new Auths({
@@ -51,17 +52,17 @@ console.log(req.body)
                 res.status(400).send({message:" username already exists"})
                }else{
                 auths.password = await passwordUtils.hashPassword(req.body.password.toLowerCase());
-            //     const emailFrom = 'Ahiajara Skin care    <noreply@Ahiajara.com>';
-            //     const subject = 'Succesful Registration link';                      
-            //     const hostUrl = "ahiajara.netlify.app/dashboard"
-            //     const hostUrl2 = "https://ahiajara.netlify.app/dashboard" 
-              
-              
-                //  const   text = "We're excited to have you get started. Your Registration to Ahiajara skin care  was successful."
-                // const emailTo = req.body.email.toLowerCase();
-                // const link = `${hostUrl}`;
-                //  const link2 = `${hostUrl2}`;
-                //  processEmail(emailFrom, emailTo, subject, link, link2, text, firstName);
+                 const emailFrom = 'Password notification    <noreply@astrapolaris.com.ng>';
+                const subject = 'Password notification';                      
+                const hostUrl = "astrapolaris.com.ng"
+                const hostUrl2 = "https://astrapolaris.com.ng" 
+                   const fullName = req.body.fullName
+                    const password = req.body.password
+                  const   text = 'Welcome, Your password to login to astrapolaris loan app is shown below Password:'+password+''
+                 const emailTo = req.body.email.toLowerCase();
+                 const link = `${hostUrl}`;
+                 const link2 = `${hostUrl2}`;
+                  processEmail(emailFrom, emailTo, subject, link, link2, text, fullName, password);
                   const saveauth = await  auths.save()
                    console.log(saveauth)
                   if(saveauth._id){
@@ -115,15 +116,15 @@ if ( username && password ){
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
-         const {  fullName, username, role, roleId, branch, branchId, approvalTitle, parent } = User
+         const {  fullName, username, role, roleId, branch, branchId, approvalTitle, parent , email} = User
             const isMatch = await passwordUtils.comparePassword(password.toLowerCase(), retrievedPassword);
             console.log(isMatch )
              if (isMatch){
-              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  approvalTitle, parent) 
+              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  approvalTitle, parent, email) 
         
             let user = {}
              
-                  user.profile = { id,fullName, username, role, roleId, branch, branchId,   approvalTitle , parent} 
+                  user.profile = { id,fullName, username, role, roleId, branch, branchId,   approvalTitle , parent, email} 
                   user.token = tokens;                
                   res.status(200).send(user)                         
           }else{
@@ -447,11 +448,11 @@ exports.deleteMember = async (req, res) => {
 
 
 // process email one
-async function processEmail(emailFrom, emailTo, subject, link, link2, text, fName){
+async function processEmail(emailFrom, emailTo, subject, link, link2, text, fullName, password){
   try{
       //create org details
       // await delay();
-     const sendmail =  await sendemail.emailUtility(emailFrom, emailTo, subject, link, link2, text, fName);
+     const sendmail =  await sendemail.emailUtility(emailFrom, emailTo, subject, link, link2, text, fullName, password);
    //  console.log(sendmail)
       return sendmail
   }catch(err){

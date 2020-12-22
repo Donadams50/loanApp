@@ -8,7 +8,8 @@ module.exports = mongoose => {
         branch:String,
         branchId: Number,
         approvalTitle: String,
-        parent: String
+        parent: String,
+        email:String
       },
       { timestamps: true }
     );
