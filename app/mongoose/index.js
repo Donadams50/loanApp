@@ -15,7 +15,7 @@ db.roles = require("../helper/roles.model.js")(mongoose);
 db.approvalprocess = require("../approvalprocess/approvalprocess.model.js")(mongoose);
 db.customerapplications = require("../loanapplication/customerapplication.model.js")(mongoose);
 db.loanofficerapplications = require("../loanapplication/loanofficerapplication.model.js")(mongoose);
-
+db.offices = require("../office/office.model.js")(mongoose);
 
 module.exports = db;
 
