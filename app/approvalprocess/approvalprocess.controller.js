@@ -28,17 +28,12 @@ console.log(req.body)
               });
         
             try{     
-                     const isApprovalProcessExist = await ApprovalProcess.findOne()
-                     console.log(isApprovalProcessExist) 
-                        if(isApprovalProcessExist){
-                            res.status(400).send({message:"Approval process can not be more than one"})
-
-                        }
-                        else{                       
-                                const saveApprovalProcess = await  approvalProcess.save()
-                            console.log(saveApprovalProcess)                
-                            res.status(201).send({message:"Branch  created"})
-                           }
+                   
+                                            
+                const saveApprovalProcess = await  approvalProcess.save()
+                console.log(saveApprovalProcess)                
+                 res.status(201).send({message:"Branch  created"})
+                           
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while creating branch "})
@@ -54,7 +49,7 @@ console.log(req.body)
 // Find approval process
 exports.findApprovalProcess = async (req, res) => {
     try{
-           const findApprovalProcess = await ApprovalProcess.findOne().sort({"_id": -1})  
+           const findApprovalProcess = await ApprovalProcess.find().sort({"_id": -1})  
           // console.log(findApprovalProcess)
            res.status(200).send(findApprovalProcess)
               

@@ -3,7 +3,7 @@ module.exports = mongoose => {
       {
         
         officeTitle:String,
-        officeBranch: String
+        officeTitleBranch: String
     
 
       },

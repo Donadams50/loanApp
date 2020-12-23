@@ -14,25 +14,36 @@ exports.createOffice = async(req,res)=>{
     }
 console.log(req.body)
 
-    const {  officeTitle, officeBranch  } = req.body;
+    const {  officeTitle } = req.body;
   
-    if ( officeBranch && officeTitle  ){
-        if ( officeTitle==="" || officeBranch=== ""   ){
+    if (  officeTitle  ){
+        if ( officeTitle===""    ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
-    }else{          
+    }else{  
+            const officeBranch = req.body.officeTitleBranch || ''  
             const office = new Offices({
-                officeBranch: officeBranch,
+            
+                officeTitleBranch: ''+officeTitle+' '+officeBranch+'',
                 officeTitle: officeTitle
+
                 
               });
         
-            try{          
-                           const saveOffice = await  office.save()
+            try{   
+                const isOfficeExist = await Offices.findOne({officeTitle: officeTitle} )
+                console.log(isUserExist)
+                 if(isOfficeExist){
+                    res.status(400).send({
+                        message:"Office already exist"
+                    });
+                 }else{
+
+                            const saveOffice = await  office.save()
                             console.log(saveOffice)                
                             res.status(201).send({message:"Office created"})
-                          
+                        }
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while creating office "})
@@ -65,21 +76,19 @@ exports.updateOffice= async(req, res) => {
     }
 console.log(req.body)
 
-    const {   officeTitle, officeBranch  } = req.body;
+    const {   officeTitle  } = req.body;
 
-    if (  officeTitle && officeBranch ){
-        if ( officeTitle===" "|| officeBranch === ""){
+    if (  officeTitle  ){
+        if ( officeTitle===" "){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{
            
-            
+            const officeBranch = req.body.officeBranch || '' 
             const office = new Offices({
                 _id : req.params.id,
-                officeBranch: officeBranch,
-                officeTitle: officeTitle
-                
+                officeTitleBranch: ''+officeTitle+' '+officeBranch+''                
               });
     
     

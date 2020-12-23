@@ -18,10 +18,10 @@ exports.create = async(req,res)=>{
     }
 console.log(req.body)
   // let {myrefCode} = req.query;
-    const {   fullName, password , role, roleId, username, parent } = req.body;
+    const {   fullName, password , role, roleId, username, officeTitleBranch  } = req.body;
   
-    if ( fullName && password  && role && roleId &&username && parent ){
-        if ( fullName==="" || password==="" || role==="" || roleId==="" || username==="" || parent==="" ){
+    if ( fullName && password  && role && roleId &&username && officeTitleBranch ){
+        if ( fullName==="" || password==="" || role==="" || roleId==="" || username==="" || officeTitleBranch==="" ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -35,8 +35,7 @@ console.log(req.body)
                 username:req.body.username,
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
-                approvalTitle: req.body.approvalTitle || '',
-                parent: req.body.parent,
+                officeTitleBranch: req.body.parent,
                 email: req.body.email
                 
               });
@@ -116,15 +115,15 @@ if ( username && password ){
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
-         const {  fullName, username, role, roleId, branch, branchId, approvalTitle, parent , email} = User
+         const {  fullName, username, role, roleId, branch, branchId, officeTitleBranch , email} = User
             const isMatch = await passwordUtils.comparePassword(password.toLowerCase(), retrievedPassword);
             console.log(isMatch )
              if (isMatch){
-              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  approvalTitle, parent, email) 
+              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  officeTitleBranch, email) 
         
             let user = {}
              
-                  user.profile = { id,fullName, username, role, roleId, branch, branchId,   approvalTitle , parent, email} 
+                  user.profile = { id,fullName, username, role, roleId, branch, branchId,  officeTitleBranch, email} 
                   user.token = tokens;                
                   res.status(200).send(user)                         
           }else{
@@ -187,10 +186,10 @@ exports.findMembeById = async (req, res) => {
     const _id = req.params.id;
     console.log(req.body)
 
-    const {   fullName, password , role, roleId, username, parent} = req.body;
+    const {   fullName, password , role, roleId, username, officeTitleBranch} = req.body;
   
-    if ( fullName && password  && role && roleId&& username&& parent){
-        if ( fullName==="" || password==="" || role==="" || roleId==="" || username==="" || parent===""  ){
+    if ( fullName && password  && role && roleId&& username&& officeTitleBranch){
+        if ( fullName==="" || password==="" || role==="" || roleId==="" || username==="" || officeTitleBranch===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -205,8 +204,7 @@ exports.findMembeById = async (req, res) => {
                 username:req.body.username,
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
-                approvalTitle: req.body.approvalTitle || '',
-                parent:req.body.parent
+                officeTitleBranch:req.body.officeTitleBranch
               });
              
     
@@ -233,6 +231,8 @@ exports.findMembeById = async (req, res) => {
     }
                    
 };
+
+
 // delete a user
 exports.deleteMember = async (req, res) => {
     try{
