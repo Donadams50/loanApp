@@ -8,5 +8,6 @@ module.exports = app => {
   app.get("/office",  verifyToken, isAdmin,  office.findOffices)
   app.put("/office/:id", verifyToken, isAdmin,  office.updateOffice)
   app.delete("/office/:id", verifyToken,  isAdmin,   office.deleteOffice)
+ // app.get("/office/unassigned",  verifyToken, isAdmin,  office.findNotAssignedoffices)
 
 }

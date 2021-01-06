@@ -2,6 +2,7 @@
 const db = require("../mongoose");
 const Members = db.profiles;
 const Auths = db.auths;
+const Offices = db.offices;
 const passwordUtils =require('../helpers/passwordUtils');
 const jwtTokenUtils = require('../helpers/jwtTokenUtils.js');
 const sendemail = require('../helpers/emailhelper.js');
@@ -69,8 +70,21 @@ console.log(req.body)
                   if(saveauth._id){
                  const savemember = await  members.save()
                    console.log(savemember)
+                   if( savemember._id){
+                   if( req.body.roleId === 5){
+                            const assignOffice = await Offices.findOneAndUpdate({ officeId }, { userInOffice: savemember._id });
+                            const markTrueAssignOffice = await Offices.findOneAndUpdate({ officeId }, { isAssigned: true });
+                            console.log(assignOffice) 
+                            console.log(markTrueAssignOffice) 
+                            res.status(201).send({message:"User  created"})
+                   }else{
+                    res.status(201).send({message:"User  created"})
                    }
-            res.status(201).send({message:"User  created"})
+                }else{
+                    res.status(400).send({message:"Error while creating profile "})
+                }
+             }
+            
           }
                        
                 
@@ -117,15 +131,15 @@ if ( username && password ){
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
-         const {  fullName, username, role, roleId, branch, branchId, officeTitleBranch , email} = User
+         const {  fullName, username, role, roleId, branch, branchId, officeTitle , email, officeId} = User
             const isMatch = await passwordUtils.comparePassword(password.toLowerCase(), retrievedPassword);
             console.log(isMatch )
              if (isMatch){
-              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  officeTitleBranch, email) 
+              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  officeTitle, email ,officeId) 
         
             let user = {}
              
-                  user.profile = { id,fullName, username, role, roleId, branch, branchId,  officeTitleBranch, email} 
+                  user.profile = { id,fullName, username, role, roleId, branch, branchId,  officeTitle, email, officeId} 
                   user.token = tokens;                
                   res.status(200).send(user)                         
           }else{
