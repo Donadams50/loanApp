@@ -2,7 +2,9 @@ module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
         branchId: Number,
-        branch:String,
+        branch:   String,
+        branchAddress: String,
+        branchPhoneNo : String
       },
       { timestamps: true }
     );

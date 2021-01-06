@@ -7,9 +7,11 @@ module.exports = mongoose => {
         username:String,
         branch:String,
         branchId: Number,
-        officeTitleBranch: String,
+        officeTitle: String,
+        officeId: String,
         email:String
       },
+
       { timestamps: true }
     );
   

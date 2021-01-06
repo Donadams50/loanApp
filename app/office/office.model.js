@@ -3,7 +3,9 @@ module.exports = mongoose => {
       {
         
         officeTitle:String,
-        officeTitleBranch: String
+        officeTitleBranch: String,
+        userInOffice: String,
+        isAssigned: Boolean
     
 
       },

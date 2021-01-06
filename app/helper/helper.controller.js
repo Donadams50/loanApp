@@ -15,18 +15,20 @@ exports.createBranch = async(req,res)=>{
     }
 console.log(req.body)
   // let {myrefCode} = req.query;
-    const {   branchId, branch } = req.body;
+    const {   branchId, branch, branchAddress, branchPhoneNo } = req.body;
   
-    if ( branchId && branch ){
-        if ( branchId==="" || branch===""  ){
+    if ( branchId && branch && branchPhoneNo && branchAddress){
+        if ( branchId==="" || branch==="" || branchAddress==="" ||  branchPhoneNo ==="" ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
             const branches = new Branches({
                 branchId: req.body.branchId,
-                branch: req.body.branch
-                
+                branch: req.body.branch,
+                branchPhoneNo:req.body.branchPhoneNo,
+                branchAddress: req.body.branchAddress
+
               });
         
             try{     

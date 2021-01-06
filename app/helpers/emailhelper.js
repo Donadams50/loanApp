@@ -15,8 +15,8 @@ exports.emailUtility= async (emailFrom, emailTo, emailSubject,  emailLink, email
             service: 'gmail',
         auth: {
             // should be replaced with real sender's account
-            user: process.env.emaillUser,
-            pass: process.env.emailPassword        
+            user: process.env.user,
+            pass:  process.env.pass        
         },
         });
   const handlebarsOptions= {

@@ -17,15 +17,16 @@ exports.create = async(req,res)=>{
         res.status(400).send({message:"Content cannot be empty"});
     }
 console.log(req.body)
-  // let {myrefCode} = req.query;
-    const {   fullName, password , role, roleId, username, officeTitleBranch  } = req.body;
+  const passwordGenerated =  getCode();
+    const {   fullName,  role, roleId, username, branch , branchId, officeTitle, officeId, email  } = req.body;
   
-    if ( fullName && password  && role && roleId &&username && officeTitleBranch ){
-        if ( fullName==="" || password==="" || role==="" || roleId==="" || username==="" || officeTitleBranch==="" ){
+    if ( fullName && passwordGenerated  && role && roleId &&username && email && branch && branchId ){
+        if ( fullName==="" ||  passwordGenerated==="" || role==="" || roleId==="" || username==="" || email==="" || branch===  "" || branchId===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
         }else{
+
             
             
             const members = new Members({
@@ -35,8 +36,9 @@ console.log(req.body)
                 username:req.body.username,
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
-                officeTitleBranch: req.body.parent,
-                email: req.body.email
+                email: req.body.email,
+                officeTitle: req.body.officeTitle || '',
+                officeId: req.body.officeId || '',
                 
               });
               const auths = new Auths({
@@ -50,13 +52,13 @@ console.log(req.body)
                if(isUserExist){
                 res.status(400).send({message:" username already exists"})
                }else{
-                auths.password = await passwordUtils.hashPassword(req.body.password.toLowerCase());
+                auths.password = await passwordUtils.hashPassword(passwordGenerated.toLowerCase());
                  const emailFrom = 'Password notification    <noreply@astrapolaris.com.ng>';
                 const subject = 'Password notification';                      
                 const hostUrl = "astrapolaris.com.ng"
                 const hostUrl2 = "https://astrapolaris.com.ng" 
                    const fullName = req.body.fullName
-                    const password = req.body.password
+                    const password = passwordGenerated
                   const   text = 'Welcome, Your password to login to astrapolaris loan app is shown below Password:'+password+''
                  const emailTo = req.body.email.toLowerCase();
                  const link = `${hostUrl}`;

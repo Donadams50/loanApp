@@ -26,14 +26,16 @@ console.log(req.body)
             const office = new Offices({
             
                 officeTitleBranch: ''+officeTitle+' '+officeBranch+'',
-                officeTitle: officeTitle
+                officeTitle: officeTitle,
+                isAssigned: false,
+                userInOffice: ""                
 
                 
               });
         
             try{   
-                const isOfficeExist = await Offices.findOne({officeTitle: officeTitle} )
-                console.log(isUserExist)
+                const isOfficeExist = await Offices.findOne({officeTitleBranch: ''+officeTitle+' '+officeBranch+''} )
+
                  if(isOfficeExist){
                     res.status(400).send({
                         message:"Office already exist"
@@ -79,16 +81,17 @@ console.log(req.body)
     const {   officeTitle  } = req.body;
 
     if (  officeTitle  ){
-        if ( officeTitle===" "){
+        if ( officeTitle===""){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{
            
-            const officeBranch = req.body.officeBranch || '' 
+            const officeBranch = req.body.officeTitleBranch || '' 
             const office = new Offices({
                 _id : req.params.id,
-                officeTitleBranch: ''+officeTitle+' '+officeBranch+''                
+                officeTitleBranch: ''+officeTitle+' '+officeBranch+'' ,
+                officeTitle:  officeTitle             
               });
     
     
