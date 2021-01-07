@@ -181,7 +181,6 @@ exports.findAllMembers = async (req, res) => {
        }
 };
 
-
 // find member by the id 
 exports.findMembeById = async (req, res) => {
    try{

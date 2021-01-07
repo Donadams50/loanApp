@@ -1,6 +1,7 @@
 
 const db = require("../mongoose");
 const ApprovalProcess = db.approvalprocess;
+const Members = db.profiles;
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
@@ -28,11 +29,21 @@ console.log(req.body)
               });
         
             try{     
-                   
-                                            
+                                                             
                 const saveApprovalProcess = await  approvalProcess.save()
-                console.log(saveApprovalProcess)                
-                 res.status(201).send({message:"Branch  created"})
+                console.log(saveApprovalProcess)   
+
+                if( saveApprovalProcess._id){
+                    const _id = req.body.approvalProcess[0].userId
+                    const updateLoanOfficer = await Members.findOneAndUpdate({ _id}, { isApprovalProcess: true });
+                   // const markTrueAssignOffice = await Offices.findOneAndUpdate({ _id }, { isAssigned: true });
+                   res.status(201).send({message:"approval process  created"})
+                  
+                   }else{
+                       res.status(400).send({message:"Error while creating approval process "})
+                   }
+                           
+                
                            
             }catch(err){
                 console.log(err)
@@ -88,9 +99,15 @@ console.log(req.body)
             try{
                 const updateapprovalProcess = await ApprovalProcess.updateOne( {_id}, approvalProcess)
                    //  console.log(updateProfile)                       
-                 res.status(201).send({message:"Approval process updated  succesfully"})
-                
-                
+                   if( updateapprovalProcess){
+                    const _id = req.body.approvalProcess[0].userId
+                    const updateLoanOfficer = await Members.findOneAndUpdate({ _id}, { isApprovalProcess: true });
+                      res.status(200).send({message:"Approval process updated successfully"})
+                  
+                   }else{
+                       res.status(400).send({message:"Error while updating approval process "})
+                   }
+                    
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while updating Approval process  "})
