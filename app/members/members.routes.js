@@ -10,4 +10,6 @@ module.exports = app => {
     app.put("/member/:id", verifyToken, isAdmin,  member.updateMember)
     app.delete("/member/:id", verifyToken,  isAdmin,   member.deleteMember)
     app.get("/members/:id",  verifyToken, isAdmin,  member.findMembeById)
+    app.get("/members/loanofficer/:id",  verifyToken, isAdmin,  member.findLoanOfficer)
+    app.get("/members/unassignedloanofficer/:id",  verifyToken, isAdmin,  member.findUnasignedLoan)
 }

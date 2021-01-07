@@ -6,7 +6,7 @@ module.exports = mongoose => {
         officeTitleBranch: String,
         userInOffice: String,
         isAssigned: Boolean
-    
+  
 
       },
       { timestamps: true }

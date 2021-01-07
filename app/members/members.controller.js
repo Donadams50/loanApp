@@ -267,10 +267,42 @@ exports.deleteMember = async (req, res) => {
 
 
 
+// find all loan officer
+exports.findLoanOfficer = async (req, res) => {
+    try{
+        
+             const id = req.params.id
+         const findLoanOfficer = await Members.find({roleId: id})
+        
+         console.log(findLoanOfficer)
+         res.status(200).send(findLoanOfficer)
+     // }        
+        }catch(err){
+            console.log(err)
+            res.status(500).send({message:"Error while getting all loan officer "})
+        }
+ 
+ };
+
+ // find unassigned loan officer
+exports.findUnasignedLoan = async (req, res) => {
+    try{
+        
+             const id = req.params.id
+             const isApprovalProcess = false
+             const findUnasignedLoan = await Members.find({roleId: id , isApprovalProcess: isApprovalProcess})
+        
+              console.log(findUnasignedLoan)
+             res.status(200).send(findUnasignedLoan)
+     // }        
+        }catch(err){
+            console.log(err)
+            res.status(500).send({message:"Error while getting member "})
+        }
+ 
+ };
 
 
-
-    
 
     exports.changeAdminPassword = async(req,res)=>{
         if (!req.body){

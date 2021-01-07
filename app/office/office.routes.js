@@ -4,10 +4,10 @@ module.exports = app => {
     const { verifyToken, isAdmin } = jwtTokenUtils;
    
 
-  app.post("/office", verifyToken, isAdmin, office.createOffice)
-  app.get("/office",  verifyToken, isAdmin,  office.findOffices)
-  app.put("/office/:id", verifyToken, isAdmin,  office.updateOffice)
-  app.delete("/office/:id", verifyToken,  isAdmin,   office.deleteOffice)
+  app.post("/office",  office.createOffice)
+  app.get("/office",   office.findOffices)
+  app.put("/office/:id",   office.updateOffice)
+  app.delete("/office/:id",    office.deleteOffice)
  // app.get("/office/unassigned",  verifyToken, isAdmin,  office.findNotAssignedoffices)
 
 }

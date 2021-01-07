@@ -18,7 +18,8 @@ console.log(req.body)
     const {  approvalProcess  } = req.body;
   
     if ( approvalProcess ){
-        if ( approvalProcess.length < 8  ){
+        // if ( approvalProcess.length < 8  ){
+            if ( approvalProcess.length < 0 ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -34,9 +35,10 @@ console.log(req.body)
                 console.log(saveApprovalProcess)   
 
                 if( saveApprovalProcess._id){
-                    const _id = req.body.approvalProcess[0].userId
+                    const _id = req.body.approvalProcess[0].userInOffice
                     const updateLoanOfficer = await Members.findOneAndUpdate({ _id}, { isApprovalProcess: true });
-                   // const markTrueAssignOffice = await Offices.findOneAndUpdate({ _id }, { isAssigned: true });
+                    console.log(updateLoanOfficer)
+                   
                    res.status(201).send({message:"approval process  created"})
                   
                    }else{
@@ -81,7 +83,7 @@ console.log(req.body)
     const {  approvalProcess  } = req.body;
   
     if ( approvalProcess ){
-        if ( approvalProcess.length < 8  ){
+        if ( approvalProcess.length < 0  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -95,13 +97,14 @@ console.log(req.body)
           });
     
     
-         
+        
             try{
                 const updateapprovalProcess = await ApprovalProcess.updateOne( {_id}, approvalProcess)
-                   //  console.log(updateProfile)                       
+                   console.log(updateapprovalProcess)                       
                    if( updateapprovalProcess){
-                    const _id = req.body.approvalProcess[0].userId
+                    const _id = req.body.approvalProcess[0].userInOffice
                     const updateLoanOfficer = await Members.findOneAndUpdate({ _id}, { isApprovalProcess: true });
+                    console.log(updateLoanOfficer) 
                       res.status(200).send({message:"Approval process updated successfully"})
                   
                    }else{
