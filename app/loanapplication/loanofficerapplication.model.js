@@ -5,7 +5,7 @@ module.exports = mongoose => {
         form:Object,
         status:String,
         branch:String,
-        branchId: Number,
+        branchId: String,
         assignedTo: String,
         declinedBy: String,
         loanOfficer: String,

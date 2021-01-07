@@ -4,12 +4,12 @@ module.exports = mongoose => {
         fullName: String,
         role: String,
         roleId: Number,
-        username:String,
         branch:String,
-        branchId: Number,
+        branchId: String,
         officeTitle: String,
         officeId: String,
-        email:String
+        email:String,
+        isApprovalProcess:Boolean
       },
 
       { timestamps: true }

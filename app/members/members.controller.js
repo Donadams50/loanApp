@@ -19,10 +19,10 @@ exports.create = async(req,res)=>{
     }
 console.log(req.body)
   const passwordGenerated =  getCode();
-    const {   fullName,  role, roleId, username, branch , branchId, officeTitle, officeId, email  } = req.body;
+    const {   fullName,  role, roleId,  branch , branchId, officeTitle, officeId, email  } = req.body;
   
-    if ( fullName && passwordGenerated  && role && roleId &&username && email && branch && branchId ){
-        if ( fullName==="" ||  passwordGenerated==="" || role==="" || roleId==="" || username==="" || email==="" || branch===  "" || branchId===""  ){
+    if ( fullName && passwordGenerated  && role && roleId && email && branch && branchId ){
+        if ( fullName==="" ||  passwordGenerated==="" || role==="" || roleId===""  || email==="" || branch===  "" || branchId===""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -34,24 +34,24 @@ console.log(req.body)
                 fullName: req.body.fullName,
                 role: req.body.role,
                 roleId: req.body.roleId,
-                username:req.body.username,
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
                 email: req.body.email,
                 officeTitle: req.body.officeTitle || '',
                 officeId: req.body.officeId || '',
+                isApprovalProcess: false,
                 
               });
               const auths = new Auths({
-                username: req.body.username               
+                email: req.body.email               
               });
 
          
             try{
-              const isUserExist = await Members.findOne({username: username} )
+              const isUserExist = await Members.findOne({email: email} )
               console.log(isUserExist)
                if(isUserExist){
-                res.status(400).send({message:" username already exists"})
+                res.status(400).send({message:" Email already exists"})
                }else{
                 auths.password = await passwordUtils.hashPassword(passwordGenerated.toLowerCase());
                  const emailFrom = 'Password notification    <noreply@astrapolaris.com.ng>';
@@ -72,12 +72,15 @@ console.log(req.body)
                    console.log(savemember)
                    if( savemember._id){
                    if( req.body.roleId === 5){
-                            const assignOffice = await Offices.findOneAndUpdate({ officeId }, { userInOffice: savemember._id });
-                            const markTrueAssignOffice = await Offices.findOneAndUpdate({ officeId }, { isAssigned: true });
+                       const _id = req.body.officeId 
+                       console.log("five")
+                            const assignOffice = await Offices.findOneAndUpdate({ _id}, { userInOffice: savemember._id });
+                            const markTrueAssignOffice = await Offices.findOneAndUpdate({ _id }, { isAssigned: true });
                             console.log(assignOffice) 
                             console.log(markTrueAssignOffice) 
                             res.status(201).send({message:"User  created"})
                    }else{
+                    console.log("others")
                     res.status(201).send({message:"User  created"})
                    }
                 }else{
@@ -86,7 +89,7 @@ console.log(req.body)
              }
             
           }
-                       
+                 
                 
             }catch(err){
                 console.log(err)
@@ -107,10 +110,10 @@ exports.signIn = async(req, res) => {
 }
 console.log(req.body)
 // let {myrefCode} = req.query;
-const {   username, password  } = req.body;
+const {   email, password  } = req.body;
 
-if ( username && password ){
-    if ( username==="" || password==="" ){
+if ( email && password ){
+    if ( email==="" || password==="" ){
         res.status(400).send({
             message:"Incorrect entry format"
         });
@@ -118,28 +121,28 @@ if ( username && password ){
         
         
         const members = new Members({
-            username: req.body.username,
+            email: req.body.email,
             password: req.body.password
             
           });
 
      
         try{
-         const User = await Members.findOne({username: username} )
-         const Auth = await Auths.findOne({username: username} )
+         const User = await Members.findOne({email: email} )
+         const Auth = await Auths.findOne({email: email} )
          console.log(User)
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
-         const {  fullName, username, role, roleId, branch, branchId, officeTitle , email, officeId} = User
+         const {  fullName,  role, roleId, branch, branchId, officeTitle , email, officeId, isApprovalProcess} = User
             const isMatch = await passwordUtils.comparePassword(password.toLowerCase(), retrievedPassword);
             console.log(isMatch )
              if (isMatch){
-              const tokens = signToken( id, fullName, username, role, roleId, branch, branchId,  officeTitle, email ,officeId) 
+              const tokens = signToken( id, fullName,  role, roleId, branch, branchId,  officeTitle, email ,officeId, isApprovalProcess) 
         
             let user = {}
              
-                  user.profile = { id,fullName, username, role, roleId, branch, branchId,  officeTitle, email, officeId} 
+                  user.profile = { id,fullName,  role, roleId, branch, branchId,  officeTitle, email, officeId, isApprovalProcess} 
                   user.token = tokens;                
                   res.status(200).send(user)                         
           }else{

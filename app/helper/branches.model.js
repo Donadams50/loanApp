@@ -1,7 +1,7 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        branchId: Number,
+        
         branch:   String,
         branchAddress: String,
         branchPhoneNo : String

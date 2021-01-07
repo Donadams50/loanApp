@@ -15,16 +15,16 @@ exports.createBranch = async(req,res)=>{
     }
 console.log(req.body)
   // let {myrefCode} = req.query;
-    const {   branchId, branch, branchAddress, branchPhoneNo } = req.body;
+    const {    branch, branchAddress, branchPhoneNo } = req.body;
   
-    if ( branchId && branch && branchPhoneNo && branchAddress){
-        if ( branchId==="" || branch==="" || branchAddress==="" ||  branchPhoneNo ==="" ){
+    if (  branch && branchPhoneNo && branchAddress){
+        if (  branch==="" || branchAddress==="" ||  branchPhoneNo ==="" ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
             const branches = new Branches({
-                branchId: req.body.branchId,
+                
                 branch: req.body.branch,
                 branchPhoneNo:req.body.branchPhoneNo,
                 branchAddress: req.body.branchAddress
@@ -32,10 +32,10 @@ console.log(req.body)
               });
         
             try{     
-                     const isBranchIdExist = await Branches.findOne({branchId: branchId} )
+                    
                      const isBranchNameExist = await Branches.findOne({branch: branch} )
                     
-                        if(isBranchIdExist || isBranchNameExist){
+                        if( isBranchNameExist){
                             res.status(400).send({message:" branch id / branch name already exists"})
 
                         }
