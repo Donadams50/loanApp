@@ -17,7 +17,7 @@ console.log(req.body)
 
     const {  officeTitle } = req.body;
   
-    if (  officeTitle  ){
+    if (  officeTitle , officeTitleBranch ){
         if ( officeTitle===""    ){
             res.status(400).send({
                 message:"Incorrect entry format"
