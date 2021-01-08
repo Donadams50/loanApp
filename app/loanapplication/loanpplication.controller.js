@@ -82,19 +82,23 @@ console.log(req.body)
 
                         }
                         else{
-                        const loanofficerApplication = new LoanOfficerApplication({
-                            form: req.body.form,
-                            branch:req.body.form.branch || '',
-                            branchId: req.body.form.branchId || '',
-                            status: "On_Going",
-                            assignedTo: req.user.parent,
-                            loanOfficer: req.user.id,
-                            signed: {"name": req.user.fullName, "remark": "valid", "title": "loan_officer", "user_id":req.user.id},
-                            customerApplicationId: req.body.form.customerApplicationId ,
-                            declinedBy: ''
+                            const findApprovalProcess = await ApprovalProcess.findOne().sort({"_id": -1}) 
+                                    const loanofficerApplication = new LoanOfficerApplication({
+                                        form: req.body.form,
+                                        branch:req.body.form.branch || '',
+                                        branchId: req.body.form.branchId || '',
+                                        status: "On_Going",
+                                        assignedTo: req.user.parent,
+                                        loanOfficer: req.user.id,
+                                        signed: {"name": req.user.fullName, "remark": "valid", "title": "loan_officer", "user_id":req.user.id},
+                                        customerApplicationId: req.body.form.customerApplicationId ,
+                                        declinedBy: '',
+                                        approvalProcessId: "String",
+                                        approvalProcess: "Array"
+                                        });
+
                             
-                            });
-                        const loanofficerApplicationsave = await  loanofficerApplication.save()
+                            const loanofficerApplicationsave = await  loanofficerApplication.save()
                     
                        if(loanofficerApplicationsave){
                         console.log(req.body.form.customerApplicationId) 

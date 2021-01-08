@@ -25,7 +25,8 @@ console.log(req.body)
             });
     }else{          
             const approvalProcess = new ApprovalProcess({
-                approvalProcess: req.body.approvalProcess
+                approvalProcess: req.body.approvalProcess,
+                loanOfficer: req.body.approvalProcess[0].userInOffice
                 
               });
         
@@ -49,7 +50,7 @@ console.log(req.body)
                            
             }catch(err){
                 console.log(err)
-                res.status(500).send({message:"Error while creating branch "})
+                res.status(500).send({message:"Error while creating approval process "})
             }
         }
     }else{

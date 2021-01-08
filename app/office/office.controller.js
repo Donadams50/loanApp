@@ -23,10 +23,10 @@ console.log(req.body)
                 message:"Incorrect entry format"
             });
     }else{  
-            const officeBranch = req.body.officeTitleBranch || ''  
+              
             const office = new Offices({
             
-                officeTitleBranch: ''+officeTitle+' '+officeBranch+'',
+                officeTitleBranch: officeTitleBranch,
                 officeTitle: officeTitle,
                 isAssigned: false,
                 userInOffice: "" ,
@@ -36,7 +36,7 @@ console.log(req.body)
               });
         
             try{   
-                const isOfficeExist = await Offices.findOne({officeTitleBranch: ''+officeTitle+' '+officeBranch+''} )
+                const isOfficeExist = await Offices.findOne({officeTitleBranch: officeTitleBranch} )
 
                  if(isOfficeExist){
                     res.status(400).send({
@@ -89,10 +89,10 @@ console.log(req.body)
             });
     }else{
            
-            const officeBranch = req.body.officeTitleBranch || '' 
+           
             const office = new Offices({
                 _id : req.params.id,
-                officeTitleBranch: ''+officeTitle+' '+officeBranch+'' ,
+                officeTitleBranch: officeTitleBranch ,
                 officeTitle:  officeTitle ,
                 userNameInOffice: userNameInOffice,
                 userInOffice: userInOffice, 

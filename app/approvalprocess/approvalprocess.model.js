@@ -3,6 +3,7 @@ module.exports = mongoose => {
       {
         
         approvalProcess:Array,
+        loanOfficer: String
     
 
       },
