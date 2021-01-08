@@ -2,6 +2,7 @@
 const db = require("../mongoose");
 const CustomerApplication = db.customerapplications;
 const LoanOfficerApplication = db.loanofficerapplications;
+const ApprovalProcess = db.approvalprocess;
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
@@ -82,19 +83,20 @@ console.log(req.body)
 
                         }
                         else{
-                            const findApprovalProcess = await ApprovalProcess.findOne().sort({"_id": -1}) 
+                            const findApprovalProcess = await ApprovalProcess.findOne({loanOfficer:req.user.id })
+                               console.log(findApprovalProcess)
                                     const loanofficerApplication = new LoanOfficerApplication({
                                         form: req.body.form,
                                         branch:req.body.form.branch || '',
                                         branchId: req.body.form.branchId || '',
                                         status: "On_Going",
-                                        assignedTo: req.user.parent,
+                                        assignedTo: findApprovalProcess.approvalProcess[1].userInOffice,
                                         loanOfficer: req.user.id,
                                         signed: {"name": req.user.fullName, "remark": "valid", "title": "loan_officer", "user_id":req.user.id},
                                         customerApplicationId: req.body.form.customerApplicationId ,
                                         declinedBy: '',
-                                        approvalProcessId: "String",
-                                        approvalProcess: "Array"
+                                        approvalProcessId: findApprovalProcess._id,
+                                        approvalProcess: findApprovalProcess.approvalProcess
                                         });
 
                             
@@ -117,16 +119,20 @@ console.log(req.body)
                     
                   } else{    
                     console.log("new")  
+                    const findApprovalProcess = await ApprovalProcess.findOne({loanOfficer:req.user.id })
+                    console.log(findApprovalProcess)
                     const loanofficerApplication = new LoanOfficerApplication({
                         form: req.body.form,
                         branch:req.body.form.branch || '',
                         branchId: req.body.form.branchId || '',
                         status: "On_Going",
-                        assignedTo: req.user.parent,
+                        assignedTo: findApprovalProcess.approvalProcess[1].userInOffice,
                         loanOfficer: req.user.id,
                         signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
                         customerApplicationId: req.body.form.customerApplicationId || '',
-                        declinedBy: ''
+                        declinedBy: '',
+                        approvalProcessId: findApprovalProcess._id,
+                        approvalProcess: findApprovalProcess.approvalProcess
                         
                       });                                  
                     const loanofficerApplicationsave = await  loanofficerApplication.save()
@@ -196,7 +202,7 @@ exports.approvalRecommendation= async(req,res)=>{
                    try{     
 
                         const isLoanOngoing = await LoanOfficerApplication.findOne({_id: id} )
-                        console.log(isLoanOngoing.status) 
+                         console.log(isLoanOngoing) 
                         if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined"){
                             res.status(400).send({
                                 message:"This loan has been completed or declined "
@@ -205,14 +211,30 @@ exports.approvalRecommendation= async(req,res)=>{
                         }
                         else{
                             const _id = req.body.id
-                            if(req.user.parent === "None"){
+                             let approvalProcess = isLoanOngoing.approvalProcess;
+                                 let lastItem = approvalProcess.slice(-1)[0];
+                                 console.log("lastobject")
+                                 console.log(lastItem)
+                             if(lastItem.userInOffice === req.user.id){
                                 console.log("last")
-                            const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
-                            const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
-                           const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });         
+                                console.log(lastItem.userInOffice)
+                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
+                                const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                                const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });         
                             res.status(200).send({message:"Recommendation posted  successfully"})
 
                             }else{
+                                let approvalProcess = isLoanOngoing.approvalProcess;
+                                    // a = [
+                                    //     {prop1:"abc",prop2:"qwe"},
+                                    //     {prop1:"bnmb",prop2:"yutu"},
+                                    //     {prop1:"zxvz",prop2:"qwrq"}
+                                    //    ];
+                                        
+                                   indexAssingnee = approvalProcess.find( x => x.userInOffice ===req.user.id);
+                                       console.log("indexAssingnee");
+                                      console.log(indexAssingnee);
+                                //    if(indexAssingnee.userInOffice === req.user.id){
                                 console.log("still in process")
                                 const assignedTo= req.user.parent                  
                                 const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  

@@ -178,7 +178,7 @@ exports.updateBranch= async(req, res) => {
             try{
                 const updateBranch = await Branches.updateOne( {_id}, branch)
                     console.log(updateBranch)                       
-                     res.status(201).send({message:"Branch updated  succesfully"})
+                     res.status(200).send({message:"Branch updated  succesfully"})
                 
                 
             }catch(err){
