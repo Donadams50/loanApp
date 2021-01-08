@@ -8,7 +8,7 @@ module.exports = app => {
  app.get("/branches",   helper.findAllBranches)
  app.get("/roles",    helper.findAllRoles)
  app.get("/branch/count",   helper.countBranch)
- //app.delete("/role/:id", verifyToken,  isAdmin,   helper.deleteRole)
- //app.put("/branch/:id", verifyToken, isAdmin,  helper.updateBranch)
+ app.delete("/branch/:id",   helper.deleteBranch)
+ app.put("/branch/:id",   helper.updateBranch)
  // app.delete("/branch/:id", verifyToken,  isAdmin,   helper.deleteBranch)
 }

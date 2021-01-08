@@ -149,7 +149,72 @@ exports.countBranch = async (req, res) => {
 };
 
 
+//update branch
+exports.updateBranch= async(req, res) => {
+    const _id = req.params.id;
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+      console.log(req.body)
 
+    const {   branch, branchAddress, branchPhoneNo } = req.body;
+
+    if (  branch && branchPhoneNo && branchAddress  ){
+        if ( branch==="" || branchAddress==="" ||  branchPhoneNo ===""){
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+    }else{
+           
+            const branch = new Branches({
+                _id : req.params.id,
+                branch: req.body.branch,
+                branchPhoneNo:req.body.branchPhoneNo,
+                branchAddress: req.body.branchAddress      
+              });
+    
+    
+         
+            try{
+                const updateBranch = await Branches.updateOne( {_id}, branch)
+                    console.log(updateBranch)                       
+                     res.status(201).send({message:"Branch updated  succesfully"})
+                
+                
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while updating branch"})
+            }
+          
+          
+   
+          
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+     
+
+    
+
+                   
+};
+
+// delete branch
+exports.deleteBranch = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const deleteBranch= await Branches.findByIdAndRemove(id)
+        console.log(deleteBranch)
+        res.status(200).send({message:"Deleted succesfully"})
+         
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while deleting branch "})
+       }
+}
 
 
 
