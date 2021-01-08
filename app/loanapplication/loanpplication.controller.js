@@ -215,7 +215,7 @@ exports.approvalRecommendation= async(req,res)=>{
                                  let lastItem = approvalProcess.slice(-1)[0];
                                  console.log("lastobject")
                                  console.log(lastItem)
-                             if(lastItem.userInOffice === req.user.id){
+                                if(lastItem.userInOffice === req.user.id){
                                 console.log("last")
                                 console.log(lastItem.userInOffice)
                                 const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
@@ -225,22 +225,18 @@ exports.approvalRecommendation= async(req,res)=>{
 
                             }else{
                                 let approvalProcess = isLoanOngoing.approvalProcess;
-                                    // a = [
-                                    //     {prop1:"abc",prop2:"qwe"},
-                                    //     {prop1:"bnmb",prop2:"yutu"},
-                                    //     {prop1:"zxvz",prop2:"qwrq"}
-                                    //    ];
+                                    
                                         
-                                   indexAssingnee = approvalProcess.find( x => x.userInOffice ===req.user.id);
-                                       console.log("indexAssingnee");
+                                   // indexAssingnee = approvalProcess.find( x => x.userInOffice ===req.user.id);
+                                     indexAssingnee = await approvalProcess.find( x => x.userInOffice === req.user.id)
+                                      console.log("indexAssingnee");
                                       console.log(indexAssingnee);
-                                //    if(indexAssingnee.userInOffice === req.user.id){
-                                console.log("still in process")
-                                const assignedTo= req.user.parent                  
-                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
-                                const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
-                                const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
-                                 res.status(200).send({message:"Recommendation posted  successfully"})
+                                       const assignedTo = approvalProcess[ parseInt(indexAssingnee + 1)]
+                                       console.log("still in process")               
+                                        const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
+                                        const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                                        const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
+                                        res.status(200).send({message:"Recommendation posted  successfully"})
                             }
                            
                     }            
