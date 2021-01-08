@@ -221,7 +221,7 @@ exports.approvalRecommendation= async(req,res)=>{
                                 const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
                                 const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                 const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });         
-                            res.status(200).send({message:"Recommendation posted  successfully"})
+                                res.status(200).send({message:"Recommendation posted  successfully"})
 
                             }else{
                                 let approvalProcess = isLoanOngoing.approvalProcess;
