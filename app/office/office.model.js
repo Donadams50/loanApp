@@ -6,7 +6,8 @@ module.exports = mongoose => {
         officeTitleBranch: String,
         userInOffice: String,
         userNameInOffice: String,
-        isAssigned: Boolean
+        isAssigned: Boolean,
+        combinedOfficeBranch: String
   
 
       },

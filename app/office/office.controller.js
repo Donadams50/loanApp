@@ -23,20 +23,21 @@ console.log(req.body)
                 message:"Incorrect entry format"
             });
     }else{  
-              
+              const combinedOfficeBranch = ''+officeTitle+' '+officeTitleBranch+''
             const office = new Offices({
             
                 officeTitleBranch: officeTitleBranch,
                 officeTitle: officeTitle,
                 isAssigned: false,
                 userInOffice: "" ,
-                userNameInOffice: ""            
+                userNameInOffice: "",
+                combinedOfficeBranch: combinedOfficeBranch         
 
                 
               });
         
             try{   
-                const isOfficeExist = await Offices.findOne({officeTitleBranch: officeTitleBranch} )
+                const isOfficeExist = await Offices.findOne({combinedOfficeBranch: combinedOfficeBranch} )
 
                  if(isOfficeExist){
                     res.status(400).send({
@@ -89,23 +90,31 @@ console.log(req.body)
             });
     }else{
            
-           
+        const combinedOfficeBranch = ''+officeTitle+' '+officeTitleBranch+''
             const office = new Offices({
                 _id : req.params.id,
                 officeTitleBranch: officeTitleBranch ,
                 officeTitle:  officeTitle ,
                 userNameInOffice: userNameInOffice,
                 userInOffice: userInOffice, 
-                isAssigned: isAssigned       
+                isAssigned: isAssigned  ,
+                combinedOfficeBranch: combinedOfficeBranch    
               });
     
     
          
             try{
+                const isOfficeExist = await Offices.findOne({combinedOfficeBranch: combinedOfficeBranch} )
+
+                 if(isOfficeExist){
+                    res.status(400).send({
+                        message:"Office name already exist"
+                    });
+                 }else{
                 const updateOffice = await Offices.updateOne( {_id}, office)
                     console.log(updateOffice)                       
-                 res.status(201).send({message:"Office updated  succesfully"})
-                
+                 res.status(200).send({message:"Office updated  succesfully"})
+                }
                 
             }catch(err){
                 console.log(err)
