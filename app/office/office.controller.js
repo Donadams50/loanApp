@@ -15,9 +15,9 @@ exports.createOffice = async(req,res)=>{
     }
 console.log(req.body)
 
-    const {  officeTitle } = req.body;
+    const {  officeTitle , officeTitleBranch} = req.body;
   
-    if (  officeTitle , officeTitleBranch ){
+    if (  officeTitle  ){
         if ( officeTitle===""    ){
             res.status(400).send({
                 message:"Incorrect entry format"
