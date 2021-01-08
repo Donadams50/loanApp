@@ -80,7 +80,7 @@ exports.updateOffice= async(req, res) => {
     }
 console.log(req.body)
 
-    const {   officeTitle, userNameInOffice , userInOffice, isAssigned } = req.body;
+    const {   officeTitle, officeTitleBranch ,userNameInOffice , userInOffice, isAssigned } = req.body;
 
     if (  officeTitle  ){
         if ( officeTitle===""){
