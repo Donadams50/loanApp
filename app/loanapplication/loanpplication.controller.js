@@ -145,7 +145,7 @@ console.log(req.body)
 exports.loanOfficerGetAllLoan = async (req, res) => {
     try{
         const status = "Initiated"
-        const branch = req.query.branch
+       // const branch = req.query.branch
            const findPreFilledLoan = await CustomerApplication.find({status:status}).sort({"_id": -1})  
           // console.log(findApprovalProcess)
            res.status(200).send(findPreFilledLoan)

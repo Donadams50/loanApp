@@ -12,4 +12,5 @@ module.exports = app => {
     app.get("/members/:id",  verifyToken, isAdmin,  member.findMembeById)
     app.get("/members/loanofficer/:id",  verifyToken, isAdmin,  member.findLoanOfficer)
     app.get("/members/unassignedloanofficer/:id",  verifyToken, isAdmin,  member.findUnasignedLoan)
+    app.get("/member/count",   member.countUsers)
 }

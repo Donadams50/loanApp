@@ -134,7 +134,19 @@ exports.findAllBranches= async (req, res) => {
 
 };
 
+// count of branch
 
+exports.countBranch = async (req, res) => {
+    try{
+
+        const countBranch = await Branches.countDocuments()
+        console.log(countBranch)
+        res.status(200).send({countBranch:countBranch})
+     }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while counting branch "})
+       }
+};
 
 
 

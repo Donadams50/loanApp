@@ -11,6 +11,8 @@ module.exports = mongoose => {
         loanOfficer: String,
         signed:Array,
         customerApplicationId:String,
+        approvalProcessId: String,
+        approvalProcess: Array,
       },
       { timestamps: true }
     );

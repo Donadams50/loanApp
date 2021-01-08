@@ -1,6 +1,7 @@
 
 const db = require("../mongoose");
 const Offices = db.offices;
+const Members = db.profiles;
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
@@ -28,7 +29,8 @@ console.log(req.body)
                 officeTitleBranch: ''+officeTitle+' '+officeBranch+'',
                 officeTitle: officeTitle,
                 isAssigned: false,
-                userInOffice: ""                
+                userInOffice: "" ,
+                userNameInOffice: ""            
 
                 
               });
@@ -70,7 +72,7 @@ exports.findOffices = async (req, res) => {
        }
 };
 
-//update approval process
+//update  office
 exports.updateOffice= async(req, res) => {
     const _id = req.params.id;
     if (!req.body){
@@ -78,7 +80,7 @@ exports.updateOffice= async(req, res) => {
     }
 console.log(req.body)
 
-    const {   officeTitle  } = req.body;
+    const {   officeTitle, userNameInOffice , userInOffice, isAssigned } = req.body;
 
     if (  officeTitle  ){
         if ( officeTitle===""){
@@ -91,7 +93,10 @@ console.log(req.body)
             const office = new Offices({
                 _id : req.params.id,
                 officeTitleBranch: ''+officeTitle+' '+officeBranch+'' ,
-                officeTitle:  officeTitle             
+                officeTitle:  officeTitle ,
+                userNameInOffice: userNameInOffice,
+                userInOffice: userInOffice, 
+                isAssigned: isAssigned       
               });
     
     
@@ -123,7 +128,7 @@ console.log(req.body)
                    
 };
 
-// delete aproval process
+// delete office
 exports.deleteOffice = async (req, res) => {
     try{
         const id = req.params.id;
@@ -137,7 +142,36 @@ exports.deleteOffice = async (req, res) => {
        }
 }
 
+// find unassigned  office
+exports.findNotAssignedoffices = async (req, res) => {
+    try{
+        
+             
+             const isOfficeAssigned = false
+             const findNotAssignedoffices = await Offices.find({isAssigned: isOfficeAssigned})
+        
+              console.log(findNotAssignedoffices)
+             res.status(200).send(findNotAssignedoffices)
+             
+        }catch(err){
+            console.log(err)
+            res.status(500).send({message:"Error while getting unassigned office "})
+        }
+ 
+ };
 
+//count office
+exports.countOffice = async (req, res) => {
+    try{
+
+        const countOffice = await Offices.countDocuments()
+        console.log(countOffice)
+        res.status(200).send({countOffice:countOffice})
+     }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while counting office "})
+       }
+};
 
 
 

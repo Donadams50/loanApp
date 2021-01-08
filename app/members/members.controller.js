@@ -74,7 +74,7 @@ console.log(req.body)
                    if( req.body.roleId === 5){
                        const _id = req.body.officeId 
                        console.log("five")
-                            const assignOffice = await Offices.findOneAndUpdate({ _id}, { userInOffice: savemember._id });
+                            const assignOffice = await Offices.findOneAndUpdate({ _id}, { userInOffice: savemember._id, userNameInOffice:req.body.fullName });
                             const markTrueAssignOffice = await Offices.findOneAndUpdate({ _id }, { isAssigned: true });
                             console.log(assignOffice) 
                             console.log(markTrueAssignOffice) 
@@ -301,6 +301,22 @@ exports.findUnasignedLoan = async (req, res) => {
         }
  
  };
+
+// count all user
+ exports.countUsers = async (req, res) => {
+    try{
+
+        const countUsers = await Members.countDocuments()
+        console.log(countUsers)
+        res.status(200).send({countUsers:countUsers})
+     }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while counting users "})
+       }
+};
+
+
+
 
 
 
