@@ -5,7 +5,6 @@ module.exports = mongoose => {
         approvalProcess:Array,
         loanOfficer: String
     
-
       },
       { timestamps: true }
     );

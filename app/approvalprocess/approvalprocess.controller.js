@@ -31,7 +31,13 @@ console.log(req.body)
               });
         
             try{     
-                                                             
+                const isLoanOfficerExist = await ApprovalProcess.findOne({loanOfficer: req.body.approvalProcess[0].userInOffice} ) 
+                
+                if( isLoanOfficerExist){
+                    res.status(400).send({message:" Loan officer already has an approval process"})
+
+                }
+                else{
                 const saveApprovalProcess = await  approvalProcess.save()
                 console.log(saveApprovalProcess)   
 
@@ -47,7 +53,7 @@ console.log(req.body)
                    }
                            
                 
-                           
+                }         
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while creating approval process "})
