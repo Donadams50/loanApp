@@ -1,12 +1,66 @@
 
 const db = require("../mongoose");
 const ApprovalProcess = db.approvalprocess;
-const Members = db.profiles;
+const Groups = db.groups;
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
 
+// create loan type
+exports.createLoanType = async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+console.log(req.body)
 
+    const {  loanTypeDescription, loanType, groupId } = req.body;
+  
+    if ( groupId && loanType ){
+        // if ( approvalProcess.length < 8  ){
+            if (groupId === "" || loanType=== "" ){
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+    }else{          
+            const loanType = new ApprovalProcess({
+                loanTypeDescription: req.body.loanTypeDescription,
+                groupId: req.body.groupId,
+                loanType: req.body.loanType
+                
+              });
+        
+            try{     
+               
+                
+                
+                const saveApprovalProcess = await  loanType.save()
+                console.log(saveApprovalProcess)   
+
+                if( saveApprovalProcess._id){
+              const  _id = req.body.groupId
+             const updateGroup = await Groups.findOneAndUpdate({ _id}, { loanTypes: saveApprovalProcess._id });
+
+                
+                   
+                   res.status(201).send({message:"loan type created"})
+                  
+                   }else{
+                       res.status(400).send({message:"Error while creating loan type "})
+                   }
+                           
+                
+                       
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating loan type "})
+            }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
 // Create approval process
 
 exports.createApprovalProcess = async(req,res)=>{
@@ -15,45 +69,29 @@ exports.createApprovalProcess = async(req,res)=>{
     }
 console.log(req.body)
 
-    const {  approvalProcess  } = req.body;
+    const {  approvalProcess , loanTypeId} = req.body;
   
-    if ( approvalProcess ){
-        // if ( approvalProcess.length < 8  ){
-            if ( approvalProcess.length < 0 ){
+    if ( approvalProcess && loanTypeId ){
+        
+            if ( approvalProcess.length < 0  || loanTypeId === ""  ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
     }else{          
-            const approvalProcess = new ApprovalProcess({
-                approvalProcess: req.body.approvalProcess,
-                loanOfficer: req.body.approvalProcess[0].userInOffice
-                
-              });
+           
         
             try{     
-                const isLoanOfficerExist = await ApprovalProcess.findOne({loanOfficer: req.body.approvalProcess[0].userInOffice} ) 
-                
-                if( isLoanOfficerExist){
-                    res.status(400).send({message:" Loan officer already has an approval process"})
 
-                }
-                else{
-                const saveApprovalProcess = await  approvalProcess.save()
-                console.log(saveApprovalProcess)   
-
-                if( saveApprovalProcess._id){
-                    const _id = req.body.approvalProcess[0].userInOffice
-                    const updateLoanOfficer = await Members.findOneAndUpdate({ _id}, { isApprovalProcess: true });
-                    console.log(updateLoanOfficer)
+               
+                    const _id = req.body.loanTypeId
+                    const updateApprovalProcess = await ApprovalProcess.findOneAndUpdate({ _id}, { approvalProcess: approvalProcess });
+                    console.log(updateApprovalProcess)
                    
                    res.status(201).send({message:"approval process  created"})
                   
-                   }else{
-                       res.status(400).send({message:"Error while creating approval process "})
-                   }
                            
                 
-                }         
+                       
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while creating approval process "})
@@ -65,6 +103,10 @@ console.log(req.body)
         });
     }
 }
+
+
+
+
 
 // Find approval process
 exports.findApprovalProcess = async (req, res) => {

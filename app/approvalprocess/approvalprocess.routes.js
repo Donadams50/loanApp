@@ -4,9 +4,10 @@ module.exports = app => {
     const { verifyToken, isAdmin } = jwtTokenUtils;
    
 
-  app.post("/approvalprocess", verifyToken, isAdmin, approvalProcess.createApprovalProcess)
+  app.post("/approvalprocess", approvalProcess.createApprovalProcess)
   app.get("/approvalprocess",  verifyToken, isAdmin,  approvalProcess.findApprovalProcess)
   app.put("/approvalprocess/:id", verifyToken, isAdmin,  approvalProcess.updateApprovalProcess)
   app.delete("/approvalprocess/:id", verifyToken,  isAdmin,   approvalProcess.deleteApprovalProcess)
+  app.post("/loantype", approvalProcess.createLoanType)
 
 }

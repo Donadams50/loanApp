@@ -1,6 +1,7 @@
 
 const db = require("../mongoose");
 const Groups = db.groups;
+const ApprovalProcess = db.approvalprocess;
 const Members = db.profiles;
 const sendemail = require('../helpers/emailhelper.js');
 
@@ -27,7 +28,7 @@ console.log(req.body)
             const group = new Groups({
             
                 groupName:groupName,
-                groupDescription: groupDescription
+                groupDescription: groupDescription,
                 
               });
         
@@ -60,6 +61,7 @@ console.log(req.body)
 exports.findGroup = async (req, res) => {
     try{
            const findGroups = await Groups.find().sort({"_id": -1})  
+           .populate('loanTypes')
            res.status(200).send(findGroups)
               
        }catch(err){

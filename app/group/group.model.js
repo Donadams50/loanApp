@@ -1,10 +1,11 @@
 module.exports = mongoose => {
+  var Schema = mongoose.Schema;
     var schema = mongoose.Schema(
       {
         
         groupName:String,
-        groupDescription: String
-       
+        groupDescription: String,
+        loanTypes: [ {type: Schema.Types.ObjectId, ref: 'approvalprocess'} ],
   
 
       },
@@ -13,6 +14,7 @@ module.exports = mongoose => {
   
     schema.method("toJSON", function() {
       const { __v, _id, ...object } = this.toObject();
+      
       object.id = _id;
       return object;
     });

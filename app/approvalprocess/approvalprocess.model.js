@@ -3,7 +3,9 @@ module.exports = mongoose => {
       {
         
         approvalProcess:Array,
-        loanOfficer: String
+        loanType: String,
+        loanTypeDescription: String,
+        groupId: String
     
       },
       { timestamps: true }
