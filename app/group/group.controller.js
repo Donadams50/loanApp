@@ -18,7 +18,7 @@ console.log(req.body)
     const {  groupName , groupDescription} = req.body;
   
     if (  groupName  ){
-        if ( groupName===""    ){
+        if ( groupName === " " ){
             res.status(400).send({
                 message:"Incorrect entry format"
             });
@@ -51,7 +51,7 @@ console.log(req.body)
         }
     }else{
         res.status(400).send({
-            message:"Incorrect entry format"
+            message:"Incorrect entry format 5"
         });
     }
 }
@@ -86,7 +86,7 @@ console.log(req.body)
     }else{
        
         const group = new Groups({
-            
+            _id: req.params.id,
             groupName:groupName,
             groupDescription: groupDescription
             
@@ -96,10 +96,10 @@ console.log(req.body)
          
             try{
                 const isGroupExist = await Groups.findOne({groupName: groupName} )
-
-                 if(isGroupExist){
+                  const _id = req.params.id
+                 if(!isGroupExist){
                     res.status(400).send({
-                        message:"Office name already exist"
+                        message:"Group does already exist"
                     });
                  }else{
                 const updateGroup = await Groups.updateOne( {_id}, group)

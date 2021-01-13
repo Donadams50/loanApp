@@ -106,7 +106,7 @@ console.log(req.body)
             try{
                 const isOfficeExist = await Offices.findOne({combinedOfficeBranch: combinedOfficeBranch} )
 
-                 if(isOfficeExist){
+                 if(!isOfficeExist){
                     res.status(400).send({
                         message:"Office name already exist"
                     });
