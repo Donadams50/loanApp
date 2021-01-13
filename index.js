@@ -33,6 +33,7 @@ db.mongoose
  require("./app/approvalprocess/approvalprocess.routes.js")(app)
  require("./app/loanapplication/loanapplication.routes.js")(app)
  require("./app/office/office.routes.js")(app)
+ require("./app/group/group.routes.js")(app)
 
 // Connect to port
 const port = process.env.PORT || 5000     
