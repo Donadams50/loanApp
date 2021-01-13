@@ -37,10 +37,10 @@ console.log(req.body)
                 console.log(saveApprovalProcess)   
 
                 if( saveApprovalProcess._id){
-              const  _id = req.body.groupId
-             const updateGroup = await Groups.findOneAndUpdate({ _id}, { loanTypes: saveApprovalProcess._id });
+              const  id = req.body.groupId
+             const updateGroup = await Groups.updateOne({_id: id}, { $addToSet: { loanTypes: [saveApprovalProcess._id] } } ) 
 
-                
+             console.log(updateGroup) 
                    
                    res.status(201).send({message:"loan type created"})
                   
