@@ -3,6 +3,7 @@ const db = require("../mongoose");
 const CustomerApplication = db.customerapplications;
 const LoanOfficerApplication = db.loanofficerapplications;
 const ApprovalProcess = db.approvalprocess;
+const Groups = db.groups;
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
@@ -119,20 +120,25 @@ console.log(req.body)
                     
                   } else{    
                     console.log("new")  
-                    const findApprovalProcess = await ApprovalProcess.findOne({loanOfficer:req.user.id })
+                    const findApprovalProcess = await Groups.findOne({_id:req.user.groupId })
+                    .populate('loanTypes')
                     console.log(findApprovalProcess)
+                    const appProcess = findApprovalProcess.loanTypes
+                    const    IndexApprovalProcess = appProcess.find( appProcess => appProcess.loanType === req.body.form.loanType);
                     const loanofficerApplication = new LoanOfficerApplication({
+                        loanType:  req.body.form.loanType,
                         form: req.body.form,
                         branch:req.body.form.branch || '',
                         branchId: req.body.form.branchId || '',
                         status: "On_Going",
-                        assignedTo: findApprovalProcess.approvalProcess[1].userInOffice,
+                        assignedTo: IndexApprovalProcess.approvalProcess[1].userInOffice,
                         loanOfficer: req.user.id,
                         signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
                         customerApplicationId: req.body.form.customerApplicationId || '',
                         declinedBy: '',
-                        approvalProcessId: findApprovalProcess._id,
-                        approvalProcess: findApprovalProcess.approvalProcess
+                        approvalProcessId: IndexApprovalProcess._id,
+                        approvalProcess: IndexApprovalProcess.approvalProcess,
+                        groupId: req.user.groupId
                         
                       });                                  
                     const loanofficerApplicationsave = await  loanofficerApplication.save()
@@ -152,17 +158,19 @@ console.log(req.body)
     }
 }
 // Find all  initiated loan for loan officer
+
+
 exports.loanOfficerGetAllLoan = async (req, res) => {
     try{
-        const status = "Initiated"
-       // const branch = req.query.branch
-           const findPreFilledLoan = await CustomerApplication.find({status:status}).sort({"_id": -1})  
-          // console.log(findApprovalProcess)
-           res.status(200).send(findPreFilledLoan)
+     //   const status = "Initiated"
+     //   const branch = req.query.branch
+           const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id}).sort({"_id": -1})  
+           console.log(req.user.id)
+           res.status(200).send(getLoanAssignedToMe)
               
        }catch(err){
            console.log(err)
-           res.status(500).send({message:"Error while getting approval process "})
+           res.status(500).send({message:"Error while getting loan request "})
        }
 };
 
@@ -178,7 +186,7 @@ exports.approvalGetAllLoan = async (req, res) => {
               
        }catch(err){
            console.log(err)
-           res.status(500).send({message:"Error while getting approval process "})
+           res.status(500).send({message:"Error while getting loan request "})
        }
 };
 
@@ -211,14 +219,14 @@ exports.approvalRecommendation= async(req,res)=>{
                         }
                         else{
                             const _id = req.body.id
-                             let approvalProcess = isLoanOngoing.approvalProcess;
-                                 let lastItem = approvalProcess.slice(-1)[0];
+                                const approvalProcess = isLoanOngoing.approvalProcess;
+                                 const lastItem = approvalProcess.slice(-1)[0];
                                  console.log("lastobject")
                                  console.log(lastItem)
                                 if(lastItem.userInOffice === req.user.id){
                                 console.log("last")
                                 console.log(lastItem.userInOffice)
-                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
+                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
                                 const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                 const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });         
                                 res.status(200).send({message:"Recommendation posted  successfully"})
@@ -228,12 +236,12 @@ exports.approvalRecommendation= async(req,res)=>{
                                     
                                         
                                    // indexAssingnee = approvalProcess.find( x => x.userInOffice ===req.user.id);
-                                     indexAssingnee = await approvalProcess.find( x => x.userInOffice === req.user.id)
+                                     indexAssingnee = await approvalProcess.findIndex( x => x.userInOffice === req.user.id)
                                       console.log("indexAssingnee");
                                       console.log(indexAssingnee);
-                                       const assignedTo = approvalProcess[ parseInt(indexAssingnee + 1)]
+                                       const assignedTo = approvalProcess[ parseInt(indexAssingnee + 1)].userInOffice
                                        console.log("still in process")               
-                                        const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
+                                        const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
                                         const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                         const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
                                         res.status(200).send({message:"Recommendation posted  successfully"})

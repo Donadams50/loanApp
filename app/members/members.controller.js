@@ -39,7 +39,7 @@ console.log(req.body)
                 email: req.body.email,
                 officeTitle: req.body.officeTitle || '',
                 officeId: req.body.officeId || '',
-                isApprovalProcess: false,
+                groupId: req.body.groupId || '',
                 
               });
               const auths = new Auths({
@@ -134,15 +134,15 @@ if ( email && password ){
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
-         const {  fullName,  role, roleId, branch, branchId, officeTitle , email, officeId, isApprovalProcess} = User
+         const {  fullName,  role, roleId, branch, branchId, officeTitle , email, officeId, groupId} = User
             const isMatch = await passwordUtils.comparePassword(password.toLowerCase(), retrievedPassword);
             console.log(isMatch )
              if (isMatch){
-              const tokens = signToken( id, fullName,  role, roleId, branch, branchId,  officeTitle, email ,officeId, isApprovalProcess) 
+              const tokens = signToken( id, fullName,  role, roleId, branch, branchId,  officeTitle, email ,officeId, groupId) 
         
             let user = {}
              
-                  user.profile = { id,fullName,  role, roleId, branch, branchId,  officeTitle, email, officeId, isApprovalProcess} 
+                  user.profile = { id,fullName,  role, roleId, branch, branchId,  officeTitle, email, officeId, groupId} 
                   user.token = tokens;                
                   res.status(200).send(user)                         
           }else{

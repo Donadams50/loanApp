@@ -57,7 +57,7 @@ console.log(req.body)
     }
 }
 
-// Find approval process
+// Find group
 exports.findGroup = async (req, res) => {
     try{
            const findGroups = await Groups.find().sort({"_id": -1})  
@@ -145,6 +145,24 @@ exports.deleteGroup = async (req, res) => {
 }
 
 
+// get group by id
+
+exports.getGroupById = async (req, res) => {
+    try{
+        
+             
+            const id = req.params.id
+             const findGroupById = await Groups.findOne({_id: id})
+             .populate('loanTypes')
+              console.log(findGroupById)
+             res.status(200).send(findGroupById)
+             
+        }catch(err){
+            console.log(err)
+            res.status(500).send({message:"Error while getting group "})
+        }
+ 
+ };
 
 
 

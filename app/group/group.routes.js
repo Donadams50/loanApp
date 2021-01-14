@@ -8,6 +8,7 @@ module.exports = app => {
   app.get("/group",   group.findGroup)
   app.put("/group/:id",   group.updateGroup)
   app.delete("/group/:id",    group.deleteGroup)
+  app.get("/group/:id",    group.getGroupById)
  
 
 }

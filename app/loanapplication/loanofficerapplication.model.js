@@ -13,6 +13,8 @@ module.exports = mongoose => {
         customerApplicationId:String,
         approvalProcessId: String,
         approvalProcess: Array,
+        groupId: String,
+        loanType: String
       },
       { timestamps: true }
     );

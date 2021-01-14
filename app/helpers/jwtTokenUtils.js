@@ -4,9 +4,9 @@ const dotenv=require('dotenv');
 dotenv.config();
   
 
-exports.signToken= (id, fullname,  Role, roleID, Branch, branchID,   OfficeTitle, Email, OfficeId, IsApprovalProcess)=> {
+exports.signToken= (id, fullname,  Role, roleID, Branch, branchID,   OfficeTitle, Email, OfficeId, GroupId)=> {
     const key = process.env.SECRET_KEY;
-    const token = jwt.sign({ id: id, fullName:fullname ,  role: Role, roleId:roleID , branch:Branch, branchId:branchID , officeTitle: OfficeTitle, email:Email, officeId: OfficeId , isApprovalProcess: IsApprovalProcess}, key, { expiresIn: '1h' });
+    const token = jwt.sign({ id: id, fullName:fullname ,  role: Role, roleId:roleID , branch:Branch, branchId:branchID , officeTitle: OfficeTitle, email:Email, officeId: OfficeId , groupId: GroupId}, key, { expiresIn: '1h' });
     return token;
   }
 

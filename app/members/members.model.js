@@ -9,7 +9,7 @@ module.exports = mongoose => {
         officeTitle: String,
         officeId: String,
         email:String,
-        isApprovalProcess:Boolean
+        groupId:String
       },
 
       { timestamps: true }
