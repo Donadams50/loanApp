@@ -9,7 +9,8 @@ module.exports = mongoose => {
         officeTitle: String,
         officeId: String,
         email:String,
-        groupId:String
+        groupId:String,
+        forgotPasswordCode: String
       },
 
       { timestamps: true }

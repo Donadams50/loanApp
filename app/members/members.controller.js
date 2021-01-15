@@ -334,16 +334,16 @@ exports.findUnasignedLoan = async (req, res) => {
 
 
 
-    exports.changeAdminPassword = async(req,res)=>{
+    exports.forgotPassword = async(req,res)=>{
         if (!req.body){
             res.status(400).send({message:"Content cannot be empty"});
         }
     console.log(req.body)
       // let {myrefCode} = req.query;
-        const {   email, password } = req.body;
+        const {   email } = req.body;
       
-        if ( email && password  ){
-            if ( email==="" || password===""  ){
+        if ( email   ){
+            if ( email===""   ){
                 res.status(400).send({
                     message:"Incorrect entry format"
                 });
@@ -354,42 +354,45 @@ exports.findUnasignedLoan = async (req, res) => {
              
                 try{
                   const isUserExist = await Members.findOne({email: email} )
-                  const getadminId = await Auths.findOne({email: email} )
-                    if(isUserExist.isAdmin === true){
-                  const newpassword = await passwordUtils.hashPassword(req.body.password.toLowerCase());
-                    console.log("newpassword")
-                    console.log(newpassword) 
-                    console.log(getadminId._id)              
+                  const isUserExist2 = await Auths.findOne({email: email} )
+                    if(isUserExist && isUserExist2){
+                    const code = uuid.v1()
+                                
                     //const email = req.body.email.toLowerCase();
-                    const _id  = getadminId._id
-                    const updatePassword = await Auths.findOneAndUpdate({ _id }, { password: newpassword });
-                    console.log(updatePassword)
- 
-                    const emailFrom = 'Ahiajara Skin care    <noreply@Ahiajara.com>';
-                    const subject = 'Succesful Registration link';                      
-                    const hostUrl = "ahiajara.netlify.app/dashboard"
-                    const hostUrl2 = "https://ahiajara.netlify.app/dashboard"    
-                    const   text = "Your password has just been changed"
+                    const _id = isUserExist._id;
+                    const saveCode = await Members.findOneAndUpdate({ _id }, { forgotPasswordCode: code });
+                    console.log(saveCode)
+                    if(isUserExist && isUserExist2){
+                    const username = isUserExist.fullName;
+                    const emailFrom = 'Astrapolaris MFB    <noreply@astrapolaris.com>';
+                    const subject = 'Reset password link';                      
+                    const hostUrl = 'loan-admin.netlify.app/changepassword/'+code+'' 
+                    const hostUrl2 = 'https://loan-admin.netlify.app/changepassword/'+code+''    
+                    const   text = "Your password reset link is shown below. Click on the reset button to change your password"
                     const emailTo = req.body.email.toLowerCase();
                     const link = `${hostUrl}`;
                     const link2 = `${hostUrl2}`;
-                     processEmail(emailFrom, emailTo, subject, link, link2, text, "Admin");
+                     processEmail(emailFrom, emailTo, subject, link, link2, text, username);
                       
-                res.status(201).send({message:"Password changed succesfully"})
+                      res.status(201).send({message:"Reset link sent succesfully"})
+
+                    }else{
+                        res.status(400).send({message:"Error while resetting password"})
+                    }
                                      
                    }
                     else{
  
 
 
-                res.status(400).send({message:"You are not an admin"})
+                  res.status(400).send({message:"User does not exist"})
 
               }
                            
                     
                 }catch(err){
                     console.log(err)
-                    res.status(500).send({message:"Error while creating profile "})
+                    res.status(500).send({message:"Error while resetting password   "})
                 }
             }
         }else{
