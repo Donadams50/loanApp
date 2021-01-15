@@ -369,7 +369,7 @@ exports.findUnasignedLoan = async (req, res) => {
                     const emailFrom = 'astrapay@astrapolaris.com';
                     const subject = 'Reset password link';                      
                     const hostUrl = 'loan-admin.netlify.app/changepassword/'+code+'' 
-                    const hostUrl2 = 'https://loan-admin.netlify.app/changepassword/'+code+''    
+                    const hostUrl2 = 'https://loan-admin.netlify.app/changepassword?code='+code+''    
                     const   text = "Your password reset link is shown below. Click on the reset button to change your password"
                     const emailTo = req.body.email.toLowerCase();
                     const link = `${hostUrl}`;
@@ -476,7 +476,7 @@ exports.findUnasignedLoan = async (req, res) => {
         }
     console.log(req.body)
       // let {myrefCode} = req.query;
-        const {email} = req.body;
+        const {email, password, code} = req.body;
       
         if ( email  ){
             if ( email === "" ){
