@@ -171,10 +171,24 @@ if ( email && password ){
 exports.findAllMembers = async (req, res) => {
     try{
         
-        
-           const findAllMembers = await Members.find().sort({"_id": -1})  
+        const{ limit}= req.query
+        console.log(limit)
+      const  lim = parseInt(limit)
+      console.log(lim)
+        if(limit){
+            const findAllMembers = await Members.find().sort({"_id": -1})  
+        console.log(findAllMembers)
+        res.status(200).send(findAllMembers)
+         }else{
+            const findAllMembers = await Members.find().sort({"_id": -1})    
            console.log(findAllMembers)
-            res.status(200).send(findAllMembers)  
+        res.status(200).send(findAllMembers)
+         }
+        
+         
+        //    const findAllMembers = await Members.find().sort({"_id": -1})  
+        //    console.log(findAllMembers)
+        //     res.status(200).send(findAllMembers)  
        }catch(err){
            console.log(err)
            res.status(500).send({message:"Error while getting all users "})
