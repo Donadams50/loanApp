@@ -367,7 +367,7 @@ exports.forgotPassword = async(req,res)=>{
                     const username = isUserExist.fullName;
                     const emailFrom = 'astrapay@astrapolaris.com';
                     const subject = 'Reset password link';                      
-                    const hostUrl = 'loan-admin.netlify.app/changepassword/'+code+'' 
+                    const hostUrl = 'loan-admin.netlify.app/changepassword?code='+code+'' 
                     const hostUrl2 = 'https://loan-admin.netlify.app/changepassword?code='+code+''    
                     const   text = "Your password reset link is shown below. Click on the reset button to change your password"
                     const emailTo = req.body.email.toLowerCase();
@@ -528,7 +528,7 @@ exports.forgotPassword = async(req,res)=>{
                  
                 }  else{
                     res.status(400).send({
-                        message:"This link you selected has already been used. kindly click the forgot password again"
+                        message:"This link you selected has already been used. "
                     });
                 } 
                     
