@@ -10,5 +10,4 @@ module.exports = app => {
   app.delete("/group/:id",    group.deleteGroup)
   app.get("/group/:id",    group.getGroupById)
  
-
 }

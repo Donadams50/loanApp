@@ -134,9 +134,23 @@ console.log(req.body)
 exports.deleteGroup = async (req, res) => {
     try{
         const id = req.params.id;
+        const findGroupById = await Groups.findOne({_id: id})
+        console.log(findGroupById)
         const deletaGroup= await Groups.findByIdAndRemove(id)
-        console.log(deletaGroup)
-        res.status(200).send({message:"Deleted succesfully"})
+     
+        const  ids = findGroupById.loanTypes;
+
+       const deletaApprovalProcess = await ApprovalProcess.deleteMany({_id:{$in:ids}})
+  
+     
+       
+        if(deletaGroup &&deletaApprovalProcess){
+            res.status(200).send({message:"Deleted succesfully"})
+        }else
+        {
+            res.status(400).send({message:"Deleted succesfully"})
+        }
+       
          
        }catch(err){
            console.log(err)
