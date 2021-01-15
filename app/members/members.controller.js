@@ -176,7 +176,7 @@ exports.findAllMembers = async (req, res) => {
       const  lim = parseInt(limit)
       console.log(lim)
         if(limit){
-            const findAllMembers = await Members.find().sort({"_id": -1})  
+            const findAllMembers = await Members.find().sort({"_id": -1}).limit(lim)
         console.log(findAllMembers)
         res.status(200).send(findAllMembers)
          }else{
