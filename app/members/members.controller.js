@@ -65,7 +65,7 @@ console.log(req.body)
                  const emailTo = req.body.email.toLowerCase();
                  const link = `${hostUrl}`;
                  const link2 = `${hostUrl2}`;
-                  processEmail(emailFrom, emailTo, subject, link, link2, text, fullName, password);
+                  processEmail(emailFrom, emailTo, subject, link, link2, text, fullName);
                   const saveauth = await  auths.save()
                    console.log(saveauth)
                   if(saveauth._id){
@@ -335,8 +335,7 @@ exports.findUnasignedLoan = async (req, res) => {
 
 
 
-
-    exports.forgotPassword = async(req,res)=>{
+exports.forgotPassword = async(req,res)=>{
         if (!req.body){
             res.status(400).send({message:"Content cannot be empty"});
         }
@@ -476,12 +475,12 @@ exports.findUnasignedLoan = async (req, res) => {
         }
     console.log(req.body)
       // let {myrefCode} = req.query;
-        const {email, password, code} = req.body;
+        const { password, code} = req.body;
       
-        if ( email  ){
-            if ( email === "" ){
+        if (   password && code ){
+            if ( password === " " || code === " "  ){
                 res.status(400).send({
-                    message:"Your email is not correct"
+                    message:"One of the entry is empty"
                 });
             }else{
                 
@@ -489,35 +488,42 @@ exports.findUnasignedLoan = async (req, res) => {
     
              
                 try{
-                //   const isUserExist = await Members.findOne({email: req.user.email} )
-                  const getuser = await Auths.findOne({email: req.body.email} )
+                  
+                  const getuser = await Members.findOne({forgotPasswordCode: req.body.code} )
                   console.log(getuser)
                   if(getuser){
-                  const temporaryPassword = getCode()
-                   console.log("tempo")
-                   console.log(temporaryPassword)
+                  const temporaryPassword = req.body.password
+                   
                     const newpassword = await passwordUtils.hashPassword(temporaryPassword);
-                    console.log("newpassword")
-                    console.log(newpassword) 
-                    console.log(getuser._id)              
-                    const _id  = getuser._id
-                    const updatePassword = await Auths.findOneAndUpdate({ _id }, { password: newpassword });
+                    
+                   // const getAuth = await Auths.findOne({email: getuser.email} )
+                    const email5 = getuser.email
+                    const _id =   getuser._id 
+                    const newForgotPasswordCode = ""
+                    const updatePassword = await Auths.findOneAndUpdate({ email5 }, { password: newpassword });
+                    const updateCode = await Members.findOneAndUpdate({_id}, { forgotPasswordCode: newForgotPasswordCode  });
                     console.log(updatePassword)
+                    console.log(updateCode)
+                    
  
-                    const emailFrom = 'Ahiajara Skin care    <noreply@Ahiajara.com>';
-                    const subject = 'Succesful Registration link';                      
-                    const hostUrl = "ahiajara.netlify.app/dashboard"
-                    const hostUrl2 = "https://ahiajara.netlify.app/dashboard"    
-                    const   text = 'Your password has been reset to '+temporaryPassword+', login with it and change your password'
+                    const emailFrom = 'astrapay@astrapolaris.com';
+                    const subject = 'Reset Password Succesful ';                      
+                    const hostUrl = "astrapolaris.com.ng"
+                     const hostUrl2 = "https://astrapolaris.com.ng"    
+                    const   text = 'Your password has been changed succesfully'
                     const emailTo = req.body.email.toLowerCase();
                     const link = `${hostUrl}`;
                     const link2 = `${hostUrl2}`;
-                     processEmail(emailFrom, emailTo, subject, link, link2, text, "req.body.email");
+                     processEmail(emailFrom, emailTo, subject, link, link2, text, fullName);
                       
                     res.status(200).send({message:"Password reset was succesfull"})
                                      
                  
-                }    
+                }  else{
+                    res.status(400).send({
+                        message:"This link you selected has already been used. kindly click the forgot password again"
+                    });
+                } 
                     
                 }catch(err){
                     console.log(err)
@@ -533,11 +539,11 @@ exports.findUnasignedLoan = async (req, res) => {
 
 
 // process email one
-async function processEmail(emailFrom, emailTo, subject, link, link2, text, fullName, password){
+async function processEmail(emailFrom, emailTo, subject, link, link2, text, fullName){
   try{
       //create org details
       // await delay();
-     const sendmail =  await sendemail.emailUtility(emailFrom, emailTo, subject, link, link2, text, fullName, password);
+     const sendmail =  await sendemail.emailUtility(emailFrom, emailTo, subject, link, link2, text, fullName);
    //  console.log(sendmail)
       return sendmail
   }catch(err){
