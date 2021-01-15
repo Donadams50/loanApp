@@ -40,6 +40,7 @@ console.log(req.body)
                 officeTitle: req.body.officeTitle || '',
                 officeId: req.body.officeId || '',
                 groupId: req.body.groupId || '',
+                forgotPasswordCode: ''
                 
               });
               const auths = new Auths({
@@ -54,7 +55,7 @@ console.log(req.body)
                 res.status(400).send({message:" Email already exists"})
                }else{
                 auths.password = await passwordUtils.hashPassword(passwordGenerated.toLowerCase());
-                 const emailFrom = 'Password notification    <noreply@astrapolaris.com.ng>';
+                 const emailFrom = 'astrapay@astrapolaris.com';
                 const subject = 'Password notification';                      
                 const hostUrl = "astrapolaris.com.ng"
                 const hostUrl2 = "https://astrapolaris.com.ng" 
@@ -236,7 +237,8 @@ exports.findMembeById = async (req, res) => {
                 username:req.body.username,
                 branch:req.body.branch || '',
                 branchId: req.body.branchId || '',
-                officeTitleBranch:req.body.officeTitleBranch
+                officeTitleBranch:req.body.officeTitleBranch,
+                forgotPasswordCode: req.body.forgotPasswordCode
               });
              
     
@@ -364,7 +366,7 @@ exports.findUnasignedLoan = async (req, res) => {
                     console.log(saveCode)
                     if(isUserExist && isUserExist2){
                     const username = isUserExist.fullName;
-                    const emailFrom = 'Astrapolaris MFB    <noreply@astrapolaris.com>';
+                    const emailFrom = 'astrapay@astrapolaris.com';
                     const subject = 'Reset password link';                      
                     const hostUrl = 'loan-admin.netlify.app/changepassword/'+code+'' 
                     const hostUrl2 = 'https://loan-admin.netlify.app/changepassword/'+code+''    
