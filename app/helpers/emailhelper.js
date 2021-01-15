@@ -28,7 +28,7 @@ exports.emailUtility= async (emailFrom, emailTo, emailSubject,  emailLink, email
           extName:'index.handlebars',
           partialsDir: './',
           layoutsDir: './',
-          defaultLayout:'./app/Helpers/index'
+          defaultLayout:'./app/helpers/index'
       },
       viewPath:'./app/Helpers',
       extName:'.handlebars',
