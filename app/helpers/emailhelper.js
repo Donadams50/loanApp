@@ -71,7 +71,7 @@ exports.emailUtility= async (emailFrom, emailTo, emailSubject,  emailLink, email
   
 } 
 
-exports.emaiforgotPassword= async (emailFrom, emailTo, emailSubject, emailText, emailText2 ) =>{
+exports.emaiforgotPassword= async (emailFrom, emailTo, subject, link, link2, text, username ) =>{
    
     let resp= await wrapedSendMail();
      return resp;
@@ -101,13 +101,13 @@ const handlebarsOptions= {
         // should be replaced with real  recipient's account 
         from: emailFrom,
         to: emailTo,         
-        subject:emailSubject,
-        text:emailText,
+        subject:subject,
+        text:text,
         template: 'forgotpassword',
         context: {
-            name: emailTo,
-            link:emailText,
-            link2: emailText2
+            name: username,
+            link:link,
+            link2: link2
         }
     }; 
 
@@ -134,69 +134,6 @@ const handlebarsOptions= {
 
 } 
 
-exports.twoFactorAuth= async (emailFrom, emailTo, emailSubject, emailText ) =>{
-   
-    let resp= await wrapedSendMail();
-     return resp;
-
-async function wrapedSendMail(){
-    return new Promise((resolve,reject)=>{
-    let transport = nodemailer.createTransport({
-        service: 'gmail',
-    auth: {
-        // should be replaced with real sender's account
-        user: process.env.emaillUser,
-              pass: process.env.emailPassword               
-    },
-    });
-const handlebarsOptions= {
-  viewEngine:{
-      extName:'twofactorauth.handlebars',
-      partialsDir: './',
-      layoutsDir: './',
-      defaultLayout:'./app/Helpers/twofactorauth'
-  },
-  viewPath:'./app/Helpers',
-  extName:'.handlebars',
-
-};
-    transport.use('compile', hbs(handlebarsOptions));
-    const mailOptions = {
-        // should be replaced with real  recipient's account 
-        from: emailFrom,
-        to: emailTo,         
-        subject:emailSubject,
-        text:emailText,
-        template: 'twofactorauth',
-        context: {
-            name: emailTo,
-            link:emailText,
-            
-        }
-    }; 
-
-
- let resp=false;
- transport.sendMail(mailOptions, function(error, info){
-    if (error) {
-     //   console.log('=======================================yyyyyyy======================')
-        console.log("error is "+error);
-       reject(false); // or use rejcet(false) but then you will have to handle errors
-       //return error
-    } 
-   else {
-      
- //   console.log('=======================================uuuuuuuuu======================')
-     console.log('Email sent: ' + info.response);    
-       resolve(true);
-    }
-   });
- 
-   })
-}
-   
-
-} 
 
 exports.notifyuser= async (emailFrom, emailTo, emailSubject, emailText, shopperUsername, earnerUsername, cancellationReason) =>{
    

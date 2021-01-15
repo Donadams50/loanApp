@@ -372,7 +372,7 @@ exports.findUnasignedLoan = async (req, res) => {
                     const emailTo = req.body.email.toLowerCase();
                     const link = `${hostUrl}`;
                     const link2 = `${hostUrl2}`;
-                     processEmail(emailFrom, emailTo, subject, link, link2, text, username);
+                     processEmailForgotPassword(emailFrom, emailTo, subject, link, link2, text, username);
                       
                       res.status(201).send({message:"Reset link sent succesfully"})
 
@@ -544,6 +544,22 @@ async function processEmail(emailFrom, emailTo, subject, link, link2, text, full
   }
 
 }
+
+
+// process email forgot password
+async function processEmailForgotPassword(emailFrom, emailTo, subject, link, link2, text, username){
+    try{
+        //create org details
+        // await delay();
+       const sendmail =  await sendemail.emaiforgotPassword(emailFrom, emailTo, subject, link, link2, text, username);
+     //  console.log(sendmail)
+        return sendmail
+    }catch(err){
+        console.log(err)
+        return err
+    }
+  
+  }
 
 
 function getCode(){

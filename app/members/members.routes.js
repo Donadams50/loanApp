@@ -13,4 +13,5 @@ module.exports = app => {
     app.get("/members/loanofficer/:id",  verifyToken, isAdmin,  member.findLoanOfficer)
     app.get("/members/unassignedloanofficer/:id",  verifyToken, isAdmin,  member.findUnasignedLoan)
     app.get("/member/count",  verifyToken, isAdmin,  member.countUsers)
+    app.post("/forgotpassword",   member.forgotPassword)
 }
