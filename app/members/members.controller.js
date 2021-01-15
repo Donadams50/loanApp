@@ -490,17 +490,23 @@ exports.forgotPassword = async(req,res)=>{
                 try{
                   
                   const getuser = await Members.findOne({forgotPasswordCode: req.body.code} )
-                  console.log(getuser)
+                  
                   if(getuser){
+                    console.log(getuser)
                   const temporaryPassword = req.body.password
                    
                     const newpassword = await passwordUtils.hashPassword(temporaryPassword);
+                    console.log(newpassword)
                     
+                    const getAuth = await Auths.findOne({email: getuser.email} )
                    // const getAuth = await Auths.findOne({email: getuser.email} )
-                    const email5 = getuser.email
-                    const _id =   getuser._id 
+                   
+                    
+                    const _id =  getAuth._id
                     const newForgotPasswordCode = ""
-                    const updatePassword = await Auths.findOneAndUpdate({ email5 }, { password: newpassword });
+                    const updatePassword = await Auths.findOneAndUpdate({ _id}, { password: newpassword });
+                    if(updatePassword){
+                    const _id =   getuser._id 
                     const updateCode = await Members.findOneAndUpdate({_id}, { forgotPasswordCode: newForgotPasswordCode  });
                     console.log(updatePassword)
                     console.log(updateCode)
@@ -511,13 +517,14 @@ exports.forgotPassword = async(req,res)=>{
                     const hostUrl = "astrapolaris.com.ng"
                      const hostUrl2 = "https://astrapolaris.com.ng"    
                     const   text = 'Your password has been changed succesfully'
-                    const emailTo = req.body.email.toLowerCase();
+                    const emailTo = getuser.email.toLowerCase()
                     const link = `${hostUrl}`;
                     const link2 = `${hostUrl2}`;
+                    const fullName = getuser.fullName
                      processEmail(emailFrom, emailTo, subject, link, link2, text, fullName);
                       
                     res.status(200).send({message:"Password reset was succesfull"})
-                                     
+                    }            
                  
                 }  else{
                     res.status(400).send({
