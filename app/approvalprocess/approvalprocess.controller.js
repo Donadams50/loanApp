@@ -200,9 +200,17 @@ exports.deleteApprovalProcess = async (req, res) => {
 exports.deleteLoanType = async (req, res) => {
     try{
         const id = req.params.id;
-        const deleteloantype= await ApprovalProcess.findByIdAndRemove(id)
-        console.log(deleteloantype)
-        res.status(200).send({message:"Deleted succesfully"})
+        const removeIdFromGroup= await Groups.findByIdAndUpdate(req.body.groupId, { $pull: { "loanTypes": { _id: req.params.id } } }, { safe: true, upsert: true },)
+        console.log(removeIdFromGroup)
+        if(removeIdFromGroup){
+            const deleteloantype= await ApprovalProcess.findByIdAndRemove(id)
+             console.log(deleteloantype)
+        
+              res.status(200).send({message:"Deleted succesfully"})
+         }else{
+            res.status(500).send({message:"Error while deleting loan type "})
+         }
+        
          
        }catch(err){
            console.log(err)
