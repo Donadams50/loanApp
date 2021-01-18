@@ -202,8 +202,7 @@ exports.deleteLoanType = async (req, res) => {
         
         const id = req.params.id
         const findGroupById = await ApprovalProcess.findOne({_id:id})
-        console.log("y")
-        console.log(findGroupById)
+       
         const groupId = findGroupById.groupId
         const idToRemove = findGroupById._id
         const removeIdFromGroup= await Groups.updateOne({_id: groupId},{ $pull: { loanTypes: id }  }, { safe: true, upsert: true })
