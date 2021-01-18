@@ -196,6 +196,19 @@ exports.deleteApprovalProcess = async (req, res) => {
 }
 
 
+// delete aproval process
+exports.deleteApprovalProcess = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const deletapprovalprocess= await ApprovalProcess.findByIdAndRemove(id)
+        console.log(deletapprovalprocess)
+        res.status(200).send({message:"Deleted succesfully"})
+         
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while deleting approval process "})
+       }
+}
 
 
 
