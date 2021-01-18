@@ -196,21 +196,21 @@ exports.deleteApprovalProcess = async (req, res) => {
 }
 
 
-// delete aproval process
+// delete loan type
 exports.deleteLoanType = async (req, res) => {
     try{
         
         const id = req.params.id
-        const findGroupById = await ApprovalProcess.findOne({_id: id})
+        const findGroupById = await ApprovalProcess.findOne({_id:id})
         console.log("y")
         console.log(findGroupById)
         const groupId = findGroupById.groupId
         const idToRemove = findGroupById._id
-        const removeIdFromGroup= await Groups.updateOne({_id: groupId},{ $pull: { loanTypes: idToRemove }  }, { safe: true, upsert: true })
+        const removeIdFromGroup= await Groups.updateOne({_id: groupId},{ $pull: { loanTypes: id }  }, { safe: true, upsert: true })
         console.log("yes")
         console.log(removeIdFromGroup)
         if(removeIdFromGroup){
-            //const deleteloantype= await ApprovalProcess.findByIdAndRemove(id)
+            const deleteloantype= await ApprovalProcess.findByIdAndRemove(id)
             console.log("yyy")
             console.log(deleteloantype)
         
