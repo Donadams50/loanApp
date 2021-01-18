@@ -9,5 +9,5 @@ module.exports = app => {
   app.put("/approvalprocess/:id", verifyToken, isAdmin,  approvalProcess.updateApprovalProcess)
   app.delete("/approvalprocess/:id", verifyToken,  isAdmin,   approvalProcess.deleteApprovalProcess)
   app.post("/loantype", approvalProcess.createLoanType)
-  
+  app.delete("/loantype", approvalProcess.deleteLoanType)
 }
