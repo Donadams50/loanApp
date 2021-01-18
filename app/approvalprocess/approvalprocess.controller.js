@@ -200,7 +200,7 @@ exports.deleteApprovalProcess = async (req, res) => {
 exports.deleteLoanType = async (req, res) => {
     try{
         const id = req.params.id;
-        const deleteloantype= await loanType.findByIdAndRemove(id)
+        const deleteloantype= await ApprovalProcess.findByIdAndRemove(id)
         console.log(deleteloantype)
         res.status(200).send({message:"Deleted succesfully"})
          
