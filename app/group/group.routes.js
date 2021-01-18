@@ -9,5 +9,7 @@ module.exports = app => {
   app.put("/group/:id",   group.updateGroup)
   app.delete("/group/:id",    group.deleteGroup)
   app.get("/group/:id",    group.getGroupById)
+  app.get("/count/group", group.getGroupCount)
  
 }
+

@@ -2,10 +2,7 @@
 const db = require("../mongoose");
 const Groups = db.groups;
 const ApprovalProcess = db.approvalprocess;
-const Members = db.profiles;
-const sendemail = require('../helpers/emailhelper.js');
 
-const uuid = require('uuid')
 
 
 // Create approval process
@@ -178,6 +175,17 @@ exports.getGroupById = async (req, res) => {
  
  };
 
+ exports.getGroupCount = async (req, res) => {
+    try{
+
+        const countgroup = await Groups.countDocuments()
+        console.log(countgroup)
+        res.status(200).send({countGroup:countgroup})
+     }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while counting group "})
+       }
+};
 
 
 
