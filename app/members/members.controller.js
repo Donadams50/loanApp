@@ -57,8 +57,8 @@ console.log(req.body)
                 auths.password = await passwordUtils.hashPassword(passwordGenerated.toLowerCase());
                  const emailFrom = 'astrapay@astrapolaris.com';
                 const subject = 'Password notification';                      
-                const hostUrl = "astrapolaris.com.ng"
-                const hostUrl2 = "https://astrapolaris.com.ng" 
+                const hostUrl = "loan-admin.netlify.app"
+                const hostUrl2 = "https://loan-admin.netlify.app" 
                    const fullName = req.body.fullName
                     const password = passwordGenerated
                   const   text = 'Welcome, Your password to login to astrapolaris loan app is shown below Password:'+password+''
