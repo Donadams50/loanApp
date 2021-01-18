@@ -201,7 +201,7 @@ exports.deleteLoanType = async (req, res) => {
     try{
         
         const id = req.params.id
-        const findGroupById = await Groups.ApprovalProcess({_id: id})
+        const findGroupById = await ApprovalProcess.findOne({_id: id})
         console.log("y")
         console.log(findGroupById)
         const groupId = findGroupById.groupId
