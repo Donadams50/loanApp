@@ -3,12 +3,12 @@ module.exports = app => {
     const jwtTokenUtils = require('../helpers/jwtTokenUtils')
     const { verifyToken, isAdmin } = jwtTokenUtils;
    
- app.post("/branch",  helper.createBranch)
- app.post("/role",  helper.createRole)
- app.get("/branches",   helper.findAllBranches)
- app.get("/roles",    helper.findAllRoles)
- app.get("/branch/count",   helper.countBranch)
- app.delete("/branch/:id",   helper.deleteBranch)
- app.put("/branch/:id",   helper.updateBranch)
+ app.post("/branch", verifyToken, isAdmin,  helper.createBranch)
+ app.post("/role", verifyToken, isAdmin, helper.createRole)
+ app.get("/branches", verifyToken, isAdmin,  helper.findAllBranches)
+ app.get("/roles", verifyToken, isAdmin,   helper.findAllRoles)
+ app.get("/branch/count", verifyToken, isAdmin,  helper.countBranch)
+ app.delete("/branch/:id", verifyToken, isAdmin,  helper.deleteBranch)
+ app.put("/branch/:id", verifyToken, isAdmin,  helper.updateBranch)
  // app.delete("/branch/:id", verifyToken,  isAdmin,   helper.deleteBranch)
 }

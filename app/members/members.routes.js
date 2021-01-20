@@ -13,6 +13,6 @@ module.exports = app => {
     app.get("/members/loanofficer/:id",  verifyToken, isAdmin,  member.findLoanOfficer)
     app.get("/members/unassignedloanofficer/:id",  verifyToken, isAdmin,  member.findUnasignedLoan)
     app.get("/member/count",  verifyToken, isAdmin,  member.countUsers)
-    app.post("/forgotpassword",   member.forgotPassword)
-    app.post("/reset",   member.resetPassword)
+    app.post("/forgotpassword",  verifyToken, isAdmin, member.forgotPassword)
+    app.post("/reset",   verifyToken, isAdmin, member.resetPassword)
 }

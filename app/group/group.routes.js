@@ -4,12 +4,12 @@ module.exports = app => {
     const { verifyToken, isAdmin } = jwtTokenUtils;
    
 
-  app.post("/group",  group.createGroup)
-  app.get("/group",   group.findGroup)
-  app.put("/group/:id",   group.updateGroup)
-  app.delete("/group/:id",    group.deleteGroup)
-  app.get("/group/:id",    group.getGroupById)
-  app.get("/count/group", group.getGroupCount)
+  app.post("/group" , verifyToken, isAdmin,  group.createGroup)
+  app.get("/group",  verifyToken, isAdmin, group.findGroup)
+  app.put("/group/:id", verifyToken, isAdmin,  group.updateGroup)
+  app.delete("/group/:id",  verifyToken, isAdmin,  group.deleteGroup)
+  app.get("/group/:id",  verifyToken, isAdmin, group.getGroupById)
+  app.get("/count/group", verifyToken, isAdmin, group.getGroupCount)
  
 }
 
