@@ -6,8 +6,8 @@ module.exports = app => {
 
      app.post("/customerapplication", loanApplication.customerApplyLoan)
      app.post("/loanofficerapplication",  verifyToken, isLoanOfficer,  loanApplication.loanOfficerApplyLoan)
-     app.get("/initaitedloan", verifyToken, isLoanOfficer,  loanApplication.loanOfficerGetAllLoan)
-     app.get("/assignedloan", verifyToken, isApproval,  loanApplication.approvalGetAllLoan)
+     app.get("/loanofficer/assignedloan", verifyToken, isLoanOfficer,  loanApplication.loanOfficerGetAllLoan)
+     app.get("/approval/assignedloan", verifyToken, isApproval,  loanApplication.approvalGetAllLoan)
      app.post("/approvalrecommendation",  verifyToken, isApproval,  loanApplication.approvalRecommendation)
      app.post("/declinerecommendation",  verifyToken, isApproval,  loanApplication.declineRecommendation)
 
