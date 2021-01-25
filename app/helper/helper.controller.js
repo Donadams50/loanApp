@@ -237,7 +237,7 @@ exports.createLoantype = async(req,res)=>{
          
             try{   
                
-                     const isLoanTypeExist = await Roles.findOne({loantype: loantype} )
+                     const isLoanTypeExist = await Loantype.findOne({loantype: loantype} )
                     
                         if(isLoanTypeExist){
                             res.status(400).send({message:"Loan type already exists"})
