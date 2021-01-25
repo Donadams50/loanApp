@@ -160,9 +160,9 @@ console.log(req.body)
         });
     }
 }
-// Find all  initiated loan for loan officer
 
 
+// Find all loan  for a loan officer
 exports.loanOfficerGetAllLoan = async (req, res) => {
     try{
      //   const status = "Initiated"
@@ -186,13 +186,15 @@ exports.loanOfficerGetAllLoan = async (req, res) => {
        }
 };
 
-// approval recommend  and give remark for loan
 
+//Approval recommend  and give remark for loan
 exports.approvalGetAllLoan = async (req, res) => {
     try{
-     //   const status = "Initiated"
+     const status5 = "Completed"
      //   const branch = req.query.branch
            const getLoanAssignedToMe = await LoanOfficerApplication.find({assignedTo:req.user.id}).sort({"_id": -1})  
+           const getLoanAssignedToMe = await LoanOfficerApplication.find({status:!status5}).sort({"_id": -1})  
+
            console.log(req.user.id)
            res.status(200).send(getLoanAssignedToMe)
               
