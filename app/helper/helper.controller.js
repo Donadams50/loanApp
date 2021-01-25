@@ -229,7 +229,7 @@ exports.createLoantype = async(req,res)=>{
                 message:"Incorrect entry format"
             });
     }else{          
-            const loantype = new Loantype({
+            const LoanType = new Loantype({
                 loantype: req.body.loantype,            
               });
     
@@ -238,15 +238,15 @@ exports.createLoantype = async(req,res)=>{
             try{   
                
                      const isLoanTypeExist = await Loantype.findOne({loantype: loantype} )
-                    
+                     console.log(isLoanTypeExist) 
                         if(isLoanTypeExist){
                             res.status(400).send({message:"Loan type already exists"})
 
                         }else{   
-                          const saveloantype = await  loantype.save()
+                          const saveloantype = await  LoanType.save()
                           console.log(saveloantype) 
                           if(saveloantype){                                          
-                              res.status(201).send({message:"Laon type created"})
+                              res.status(201).send({message:"Loan type created"})
                          }else{
                             res.status(400).send({message:"error while saving loan type"})
                          }
