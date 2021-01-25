@@ -1,7 +1,7 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        loanType: String
+        loantype: String
       },
       { timestamps: true }
     );
