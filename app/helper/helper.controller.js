@@ -216,7 +216,7 @@ exports.deleteBranch = async (req, res) => {
 }
 
 
-// Create a new role
+// Create a new loantype
 exports.createLoantype = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -246,8 +246,8 @@ exports.createLoantype = async(req,res)=>{
 
                         }else{   
                           const saveloantype = await  loantype.save()
-                          console.log(saverole) 
-                          if(saverole){                                          
+                          console.log(saveloantype) 
+                          if(saveloantype){                                          
                               res.status(201).send({message:"Laon type created"})
                          }else{
                             res.status(400).send({message:"error while saving loan type"})
@@ -256,7 +256,7 @@ exports.createLoantype = async(req,res)=>{
                         }
             }catch(err){
                 console.log(err)
-                res.status(500).send({message:"Error while creating role "})
+                res.status(500).send({message:"error while saving loan type "})
             }
         }
     }else{
@@ -267,6 +267,18 @@ exports.createLoantype = async(req,res)=>{
 }
 
 
+// Find all loan type
+exports.findAllLoantype = async (req, res) => {
+    try{
+           const findAllLoantype = await Roles.find().sort({"_id": -1})  
+           console.log(findAllRoles)
+           res.status(200).send(findAllRoles)
+              
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while getting all roles "})
+       }
+};
 
     
 
