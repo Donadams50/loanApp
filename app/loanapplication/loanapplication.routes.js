@@ -5,6 +5,8 @@ module.exports = app => {
    
 
      app.post("/customerapplication",  loanApplication.customerApplyLoan)
+     
+     
      app.post("/loanofficerapplication",  verifyToken, isLoanOfficer,  loanApplication.loanOfficerApplyLoan)
      app.get("/loanofficer/assignedloan", verifyToken, isLoanOfficer,  loanApplication.loanOfficerGetAllLoan)
      app.get("/approval/assignedloan", verifyToken, isApproval,  loanApplication.approvalGetAllLoan)
