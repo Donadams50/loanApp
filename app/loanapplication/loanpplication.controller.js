@@ -122,7 +122,8 @@ console.log(req.body)
                     console.log("new")  
                     const findApprovalProcess = await Groups.findOne({_id:req.user.groupId })
                     .populate('loanTypes')
-                    console.log(findApprovalProcess)
+                    console.log("JJ")
+                    console.log(findApprovalProcess.loanTypes)
                     const appProcess = findApprovalProcess.loanTypes
                     const    IndexApprovalProcess = appProcess.find( appProcess => appProcess.loanType === req.body.form.loanType);
                     const loanofficerApplication = new LoanOfficerApplication({
@@ -130,7 +131,7 @@ console.log(req.body)
                         form: req.body.form,
                         branch:req.body.form.branch || '',
                         branchId: req.body.form.branchId || '',
-                        status: "On_Going",
+                        status: "ongoing",
                         assignedTo: IndexApprovalProcess.approvalProcess[1].userInOffice,
                         loanOfficer: req.user.id,
                         signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
