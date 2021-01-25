@@ -230,9 +230,7 @@ exports.createLoantype = async(req,res)=>{
             });
     }else{          
             const loantype = new Loantype({
-                loantype: req.body.loantype,
-             
-                
+                loantype: req.body.loantype,            
               });
     
 
