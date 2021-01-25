@@ -164,9 +164,18 @@ exports.loanOfficerGetAllLoan = async (req, res) => {
     try{
      //   const status = "Initiated"
      //   const status = req.query.status
-           const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id}).sort({"_id": -1})  
+
+            if(status){
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status}).sort({"_id": -1})  
+                console.log(req.user.id)
+                res.status(200).send(getLoanAssignedToMe)
+            }else{
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id}).sort({"_id": -1})  
            console.log(req.user.id)
            res.status(200).send(getLoanAssignedToMe)
+                
+            }
+           
               
        }catch(err){
            console.log(err)
