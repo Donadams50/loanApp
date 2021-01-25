@@ -2,6 +2,7 @@
 const db = require("../mongoose");
 const Branches = db.branches;
 const Roles = db.roles;
+const Loantype = db.loantypes
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
@@ -13,8 +14,6 @@ exports.createBranch = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
     }
-console.log(req.body)
-  // let {myrefCode} = req.query;
     const {    branch, branchAddress, branchPhoneNo } = req.body;
   
     if (  branch && branchPhoneNo && branchAddress){
@@ -29,7 +28,7 @@ console.log(req.body)
                 branchPhoneNo:req.body.branchPhoneNo,
                 branchAddress: req.body.branchAddress
 
-              });
+                    });
         
             try{     
                     
@@ -214,6 +213,57 @@ exports.deleteBranch = async (req, res) => {
            console.log(err)
            res.status(500).send({message:"Error while deleting branch "})
        }
+}
+
+
+// Create a new role
+exports.createLoantype = async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+    const {   loantype } = req.body;
+  
+    if ( loantype ){
+        if ( loantype===""   ){
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+    }else{          
+            const loantype = new Loantype({
+                loantype: req.body.loantype,
+             
+                
+              });
+    
+
+         
+            try{   
+               
+                     const isLoanTypeExist = await Roles.findOne({loantype: loantype} )
+                    
+                        if(isRoleIdExist || isRoleNameExist){
+                            res.status(400).send({message:"Loan type already exists"})
+
+                        }else{   
+                          const saveloantype = await  loantype.save()
+                          console.log(saverole) 
+                          if(saverole){                                          
+                              res.status(201).send({message:"Laon type created"})
+                         }else{
+                            res.status(400).send({message:"error while saving loan type"})
+                         }
+                         
+                        }
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating role "})
+            }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
 }
 
 

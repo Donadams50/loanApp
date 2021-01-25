@@ -129,9 +129,9 @@ if ( email && password ){
 
      
         try{
-         const User = await Members.findOne({email: email} )
-         const Auth = await Auths.findOne({email: email} )
-         console.log(User)
+            const User = await Members.findOne({email: email} )
+             const Auth = await Auths.findOne({email: email} )
+               
            if(User){
             const retrievedPassword = Auth.password
             const id = User._id;
@@ -201,11 +201,10 @@ exports.findMembeById = async (req, res) => {
    try{
        
             let id = req.params.id
-        const findMemberById = await Members.find({id: id})
+        const findMemberById = await Members.findOne({id: id})
        
-        console.log(findMemberById)
         res.status(200).send(findMemberById)
-    // }        
+           
        }catch(err){
            console.log(err)
            res.status(500).send({message:"Error while getting member "})

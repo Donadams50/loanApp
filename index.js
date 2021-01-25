@@ -27,7 +27,7 @@ db.mongoose
     console.log("Cannot connect to the database!", err);
     process.exit();
   });
-
+  
  require("./app/members/members.routes.js")(app)
  require("./app/helper/helper.routes.js")(app)
  require("./app/approvalprocess/approvalprocess.routes.js")(app)
@@ -35,7 +35,7 @@ db.mongoose
  require("./app/office/office.routes.js")(app)
  require("./app/group/group.routes.js")(app)
 
-// Connect to port
+// Connect to port 
 const port = process.env.PORT || 5000     
 
 app.listen(port, ()=> console.log(`listening on port ${port}...`)); 
