@@ -241,7 +241,7 @@ exports.createLoantype = async(req,res)=>{
                
                      const isLoanTypeExist = await Roles.findOne({loantype: loantype} )
                     
-                        if(isRoleIdExist || isRoleNameExist){
+                        if(isLoanTypeExist){
                             res.status(400).send({message:"Loan type already exists"})
 
                         }else{   
@@ -270,13 +270,19 @@ exports.createLoantype = async(req,res)=>{
 // Find all loan type
 exports.findAllLoantype = async (req, res) => {
     try{
-           const findAllLoantype = await Roles.find().sort({"_id": -1})  
-           console.log(findAllRoles)
-           res.status(200).send(findAllRoles)
+           const findAllLoantype = await Loantype.find().sort({"_id": -1})  
+           console.log(findAllLoantype)
+           if ( findAllLoantype  ){
+                res.status(200).send(findAllLoantype)
+             }else{  
+
+                res.status(400).send({message:"Error while getting all loantypes "})
+               }
+           
               
        }catch(err){
            console.log(err)
-           res.status(500).send({message:"Error while getting all roles "})
+           res.status(500).send({message:"Error while getting all loantypes "})
        }
 };
 

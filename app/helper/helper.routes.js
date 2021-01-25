@@ -10,5 +10,5 @@ module.exports = app => {
  app.get("/branch/count", verifyToken, isAdmin,  helper.countBranch)
  app.delete("/branch/:id", verifyToken, isAdmin,  helper.deleteBranch)
  app.put("/branch/:id", verifyToken, isAdmin,  helper.updateBranch)
- // app.delete("/branch/:id", verifyToken,  isAdmin,   helper.deleteBranch)
+ app.post("/loantype", verifyToken, isAdmin,  helper.createLoantype)
 }
