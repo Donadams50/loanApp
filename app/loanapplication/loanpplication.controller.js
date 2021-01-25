@@ -125,6 +125,8 @@ console.log(req.body)
                     console.log("JJ")
                     console.log(findApprovalProcess.loanTypes)
                     const appProcess = findApprovalProcess.loanTypes
+                    console.log(appProcess.loanType)
+                    console.log(req.body.form.loanType)
                     const    IndexApprovalProcess = appProcess.find( appProcess => appProcess.loanType === req.body.form.loanType);
                     const loanofficerApplication = new LoanOfficerApplication({
                         loanType:  req.body.form.loanType,
