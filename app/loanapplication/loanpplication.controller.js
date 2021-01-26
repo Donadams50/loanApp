@@ -245,19 +245,15 @@ exports.loanOfficerRecommendation= async(req,res)=>{
                                     console.log("indexAssingnee");
                                     console.log(indexAssingnee);
                                     const assignedTo = approvalProcess[ parseInt(indexAssingnee + 1)].userInOffice
-                                    console.log("still in process")               
+                                    console.log("still in process") 
+                                    approvalProcess[parseInt(indexAssingnee)].status = "Approved" 
+                                    approvalProcess[parseInt(indexAssingnee)].remark = remark             
                                     const  signed= {"name": req.user.fullName, "remark": remark, "title": "Loan officer", "user_id":req.user.id}  
-                                    const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
-                                    const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
-                                    const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Ongoing" });   
-                                    const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, ["approvalProcess.0.status: 'Approved'"] );
-                                    const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, ["approvalProcess.0.remark: "+remark+""] );
-
-                                    //  findOneAndUpdate({query},{["answer.${element index}.content:new_data"]},{new:true},(err,docs)=>{})
-                                    // const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id}, { "approvalProcess._id" : 0 },{'$set': {"approvalProcess.$.remark": remark}});
-                                    // {'items.id': 2}, {'$set': {
-                                    //     'items.$.name': 'updated item2',
-                                    //     'items.$.value': 'two updated'
+                                   const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                                   const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
+                                   const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Ongoing" });   
+                                    const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { approvalprocess: approvalProcess });
+                               
                                    res.status(200).send({message:"Recommendation posted  successfully"})
                             }
                            
