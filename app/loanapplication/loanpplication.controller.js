@@ -128,6 +128,11 @@ console.log(req.body)
                     console.log(appProcess.loanType)
                     console.log(req.body.form.loanType)
                     const    IndexApprovalProcess = appProcess.find( appProcess => appProcess.loanType === req.body.form.loanType);
+                  //  userNameInOffice
+                  const addelementToApproval = await  IndexApprovalProcess.approvalProcess.forEach(function (element) {
+                        element.status = "Awaiting confirmation";
+                         element.remark = "";
+                      });
                     const loanofficerApplication = new LoanOfficerApplication({
                         loanType:  req.body.form.loanType,
                         form: req.body.form,

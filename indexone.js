@@ -4,7 +4,11 @@ a = [
     {prop1:"zxvz",prop2:"qwrq"}
    ];
       
- index = a.filter( x => x.prop2 ==="yutu");
+// index = a.filter( x => x.prop2 ==="yutu");
+ a.forEach(function (element) {
+  element.Active = "false";
+});
+console.log (a)
 
 //   indexAssingnee = approvalProcess.find( x => x.userInOffice ===req.user.id)
 //   console.log(index);
@@ -24,4 +28,4 @@ a = [
 
 // index = b.find( x => x.loanType ==="pepper");
 
-console.log(index);
+// console.log(index);
