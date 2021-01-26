@@ -128,8 +128,9 @@ console.log(req.body)
                     console.log(appProcess.loanType)
                     console.log(req.body.form.loanType)
                     const    IndexApprovalProcess = appProcess.find( appProcess => appProcess.loanType === req.body.form.loanType);
-                    IndexApprovalProcess.approvalProcess[0].userNameInOffice = req.user.id
-                  const addelementToApproval = await  IndexApprovalProcess.approvalProcess.forEach(function (element) {
+                             IndexApprovalProcess.approvalProcess[0].userNameInOffice = req.user.fullName
+                             IndexApprovalProcess.approvalProcess[0].userInOffice = req.user.id 
+                    const addelementToApproval = await  IndexApprovalProcess.approvalProcess.forEach(function (element) {
                         element.status = "Awaiting confirmation";
                          element.remark = "";
                       });
@@ -139,7 +140,7 @@ console.log(req.body)
                         branch:req.body.form.branch || '',
                         branchId: req.body.form.branchId || '',
                         status: "ongoing",
-                        assignedTo: IndexApprovalProcess.approvalProcess[1].userInOffice,
+                        assignedTo: req.user.id,
                         loanOfficer: req.user.id,
                         // signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
                         customerApplicationId: req.body.form.customerApplicationId || '',
@@ -209,6 +210,81 @@ exports.approvalGetAllLoan = async (req, res) => {
            res.status(500).send({message:"Error while getting loan request "})
        }
 };
+
+// approval recommends and add remark
+exports.loanOfficerRecommendation= async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+     console.log(req.body)
+
+    const {  remark , id } = req.body;
+  
+        if ( remark, id ){
+            if ( remark==="" || id=== ""  ){
+    
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+        }else{          
+                 
+                   try{     
+
+                        const isLoanOngoing = await LoanOfficerApplication.findOne({_id: id} )
+                         console.log(isLoanOngoing) 
+                        if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined"){
+                            res.status(400).send({
+                                message:"This loan has been completed or declined "
+                            });
+
+                        }
+                        else{
+                            const _id = req.body.id
+                                const approvalProcess = isLoanOngoing.approvalProcess;
+                                 const lastItem = approvalProcess.slice(-1)[0];
+                                 console.log("lastobject")
+                                 console.log(lastItem)
+                                if(lastItem.userInOffice === req.user.id){
+                                console.log("last")
+                                console.log(lastItem.userInOffice)
+                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
+                                const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                                const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });         
+                                res.status(200).send({message:"Recommendation posted  successfully"})
+
+                            }else{
+                                let approvalProcess = isLoanOngoing.approvalProcess;
+                                    
+                                        
+                                   // indexAssingnee = approvalProcess.find( x => x.userInOffice ===req.user.id);
+                                     indexAssingnee = await approvalProcess.findIndex( x => x.userInOffice === req.user.id)
+                                      console.log("indexAssingnee");
+                                      console.log(indexAssingnee);
+                                       const assignedTo = approvalProcess[ parseInt(indexAssingnee + 1)].userInOffice
+                                       console.log("still in process")               
+                                        const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
+                                        const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                                        const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
+                                        res.status(200).send({message:"Recommendation posted  successfully"})
+                            }
+                           
+                    }            
+                    
+                  
+                   
+                
+                           
+               }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating loan request "})
+              }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
 
 // approval recommends and add remark
 exports.approvalRecommendation= async(req,res)=>{

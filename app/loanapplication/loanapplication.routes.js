@@ -13,6 +13,5 @@ module.exports = app => {
      app.get("/approval/assignedloan", verifyToken, isApproval,  loanApplication.approvalGetAllLoan)
      app.post("/approvalrecommendation",  verifyToken, isApproval,  loanApplication.approvalRecommendation)
      app.post("/declinerecommendation",  verifyToken, isApproval,  loanApplication.declineRecommendation)
-
-
+     app.post("/declinerecommendation",  verifyToken, isApproval,  loanApplication.loanOfficerRecommendation)
 }
