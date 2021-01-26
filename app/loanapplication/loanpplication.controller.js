@@ -196,9 +196,9 @@ exports.loanOfficerGetAllLoan = async (req, res) => {
 //Approval recommend  and give remark for loan
 exports.approvalGetAllLoan = async (req, res) => {
     try{
-     const status5 = "Completed"
+     const status5 = "Initiated"
      //   const branch = req.query.branch
-           const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id}).sort({"_id": -1})  
+           const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id, status:!status5}).sort({"_id": -1})  
            
            //index = a.filter( x => x.prop2 ==="yutu");
 
@@ -250,9 +250,11 @@ exports.loanOfficerRecommendation= async(req,res)=>{
                                     const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                     const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
                                     const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Ongoing" });   
-                                    const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Approved" });
-                                    const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
-     
+                                    const changeApprovalStatus = await LoanOfficerApplication.update({ _id }, { "approvalProcess.id" : 0 },{'$set': {"approvalProcess.$.status": "Approved"} });
+                                    const changeRemarkStatus = await LoanOfficerApplication.update({ _id }, { "approvalProcess.id" : 0 },{'$set': {"approvalProcess.$.remark": remark}});
+                                    // {'items.id': 2}, {'$set': {
+                                    //     'items.$.name': 'updated item2',
+                                    //     'items.$.value': 'two updated'
                                    res.status(200).send({message:"Recommendation posted  successfully"})
                             }
                            
@@ -312,12 +314,9 @@ exports.approvalRecommendation= async(req,res)=>{
                                 
                                 const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
                                 const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
-                                const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });         
-                           
-                                    
-                                    const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
-                                    const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Approved" });
-                                    const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
+                                const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });                      
+                                const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Approved" });
+                                const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
                                 res.status(200).send({message:"Recommendation posted  successfully"})
 
                             }else{
@@ -333,6 +332,9 @@ exports.approvalRecommendation= async(req,res)=>{
                                         const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
                                         const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                         const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
+                                        const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Approved" });
+                                        const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
+                                       
                                         res.status(200).send({message:"Recommendation posted  successfully"})
                             }
                            
@@ -388,6 +390,8 @@ exports.declineRecommendation= async(req,res)=>{
                             const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
                             const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                             const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Declined" });         
+                            const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Declined " });
+                            const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
                             res.status(200).send({message:"Loan declined  successfully"})
 
                             
@@ -410,6 +414,66 @@ exports.declineRecommendation= async(req,res)=>{
     }
 }
 
+
+//loan officer decline loan
+
+// approval declines  and add remark
+exports.loanOfficerDeclineRecommendation= async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+     console.log(req.body)
+
+    const {  remark , id } = req.body;
+  
+        if ( remark, id ){
+            if ( remark==="" || id=== ""  ){
+    
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+        }else{          
+                 
+                   try{     
+
+                        const isLoanOngoing = await LoanOfficerApplication.findOne({_id: id} )
+                        console.log(isLoanOngoing.status) 
+                        if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined" || "Ongoing"){
+                            res.status(400).send({
+                                message:"This loan has been completed , declined  or approved"
+                            });
+
+                        }
+                        else{
+                            const _id = req.body.id
+                            
+                            console.log("declined")
+                            const  signed= {"name": req.user.fullName, "remark": remark, "title": "Loan officer", "user_id":req.user.id}  
+                            const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
+                            const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Declined" });         
+                            const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Declined " });
+                            const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
+                            res.status(200).send({message:"Loan declined  successfully"})
+
+                            
+                           
+                    }            
+                    
+                  
+                   
+                
+                           
+               }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating loan request "})
+              }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
 
 
 // find all loan officer
