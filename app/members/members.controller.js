@@ -385,7 +385,7 @@ exports.forgotPassword = async(req,res)=>{
  
 
 
-                  res.status(400).send({message:"User does not exist"})
+                         res.status(400).send({message:"User does not exist"})
 
               }
                            
