@@ -338,6 +338,25 @@ exports.declineRecommendation= async(req,res)=>{
 
 
 
+// find all loan officer
+exports.getLoanById = async (req, res) => {
+    try{
+        
+             const id = req.params.id
+         const findLoanById = await LoanOfficerApplication.find({_id: id})
+        
+         console.log(findLoanById)
+         res.status(200).send(findLoanById)
+     // }        
+        }catch(err){
+            console.log(err)
+            res.status(500).send({message:"Error while getting loan by id "})
+        }
+ 
+ };
+
+
+
 
 
 
