@@ -128,7 +128,7 @@ console.log(req.body)
                     console.log(appProcess.loanType)
                     console.log(req.body.form.loanType)
                     const    IndexApprovalProcess = appProcess.find( appProcess => appProcess.loanType === req.body.form.loanType);
-                  //  userNameInOffice
+                    IndexApprovalProcess.approvalProcess[0].userNameInOffice = req.user.id
                   const addelementToApproval = await  IndexApprovalProcess.approvalProcess.forEach(function (element) {
                         element.status = "Awaiting confirmation";
                          element.remark = "";
@@ -141,7 +141,7 @@ console.log(req.body)
                         status: "ongoing",
                         assignedTo: IndexApprovalProcess.approvalProcess[1].userInOffice,
                         loanOfficer: req.user.id,
-                        signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
+                        // signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
                         customerApplicationId: req.body.form.customerApplicationId || '',
                         declinedBy: '',
                         approvalProcessId: IndexApprovalProcess._id,
