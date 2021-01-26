@@ -250,8 +250,11 @@ exports.loanOfficerRecommendation= async(req,res)=>{
                                     const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                     const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
                                     const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Ongoing" });   
-                                    const changeApprovalStatus = await LoanOfficerApplication.update({ _id }, { "approvalProcess.id" : 0 },{'$set': {"approvalProcess.$.status": "Approved"} });
-                                    const changeRemarkStatus = await LoanOfficerApplication.update({ _id }, { "approvalProcess.id" : 0 },{'$set': {"approvalProcess.$.remark": remark}});
+                                    const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, ["approvalProcess.0.status: 'Approved'"] );
+                                    const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, ["approvalProcess.0.remark: "+remark+""] );
+
+                                    //  findOneAndUpdate({query},{["answer.${element index}.content:new_data"]},{new:true},(err,docs)=>{})
+                                    // const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id}, { "approvalProcess._id" : 0 },{'$set': {"approvalProcess.$.remark": remark}});
                                     // {'items.id': 2}, {'$set': {
                                     //     'items.$.name': 'updated item2',
                                     //     'items.$.value': 'two updated'
