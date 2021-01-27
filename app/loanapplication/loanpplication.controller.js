@@ -436,7 +436,7 @@ exports.approvalRecommendation= async(req,res)=>{
 
 
                         }else{
-                            res.status(400).send({message:"You are not the next to sign on this loan "})
+                            res.status(400).send({message:"You are not the next to sign this loan request "})
                         }
                            
                     }            
@@ -485,17 +485,52 @@ exports.declineRecommendation= async(req,res)=>{
 
                         }
                         else{
+                            if(isLoanOngoing.assignedTo === req.user.id){
+                                let newApprovalProcess = [] 
+                                approvalProcess[parseInt(indexAssingnee)].status = "Declined" 
+                                approvalProcess[parseInt(indexAssingnee)].remark = remark    
+                                   
+                                newApprovalProcess = approvalProcess
+                                console.log( newApprovalProcess)
+                           
+                             const loanapplication = new LoanOfficerApplication({
+                                    _id : req.body.id,
+                                    signed: isLoanOngoing.signed,
+                                    approvalProcess: newApprovalProcess,
+                                    loanType: isLoanOngoing.loanType,
+                                    form: isLoanOngoing.form,
+                                    branch: isLoanOngoing.branch,
+                                    branchId: isLoanOngoing.branchId,
+                                    status:   isLoanOngoing.status,
+                                    assignedTo  : isLoanOngoing.assignedTo,
+                                    loanOfficer: isLoanOngoing.loanOfficer,
+                                    customerApplicationId: isLoanOngoing.customerApplicationId,
+                                    declinedBy: isLoanOngoing.declinedBy,
+                                    approvalProcessId : isLoanOngoing.approvalProcessId,
+                                    groupId: isLoanOngoing.groupId
+                                 });
+                        
+                        
+                        
+                              const changeApprovalStatus = await LoanOfficerApplication.updateOne( {_id}, loanapplication)
+                                console.log(changeApprovalStatus)  
+                           if(changeApprovalStatus.nModified === 1){
+
                             const _id = req.body.id
                             
                             console.log("declined")
                             const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.approvalTitle, "user_id":req.user.id}  
                             const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                             const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Declined" });         
-                            const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Declined " });
-                            const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
+                         
                             res.status(200).send({message:"Loan declined  successfully"})
+                            } else{
+                                res.status(400).send({message:"Error while declining loan request "})
+                            }
 
-                            
+                            }else{
+                                res.status(400).send({message:"You are not the next to sign this loan request "})
+                            }
                            
                     }            
                     
@@ -546,17 +581,17 @@ exports.loanOfficerDeclineRecommendation= async(req,res)=>{
 
                         }
                         else{
+                            if(isLoanOngoing.loanOfficer === req.user.id){
+
                             const _id = req.body.id
                             
                             console.log("declined")
                             const  signed= {"name": req.user.fullName, "remark": remark, "title": "Loan officer", "user_id":req.user.id}  
                             const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                             const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Declined" });         
-                            const changeApprovalStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.status": "Declined " });
-                            const changeRemarkStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { "approvalProcess.remark": remark });
                             res.status(200).send({message:"Loan declined  successfully"})
 
-                            
+                        }
                            
                     }            
                     
