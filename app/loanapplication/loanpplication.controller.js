@@ -291,7 +291,7 @@ exports.loanOfficerRecommendation= async(req,res)=>{
                                 }
 
                             } else{
-                                res.status(400).send({message:"This loan was not assigned to you recommendation "})
+                                res.status(400).send({message:"This loan was not assigned to you. "})
                             }
                         }
                                 
@@ -570,7 +570,7 @@ exports.loanOfficerDeclineRecommendation= async(req,res)=>{
             });
         }else{          
                  
-                   try{     
+             try{     
 
                         const isLoanOngoing = await LoanOfficerApplication.findOne({_id: id} )
                         console.log(isLoanOngoing.status) 
@@ -581,16 +581,47 @@ exports.loanOfficerDeclineRecommendation= async(req,res)=>{
 
                         }
                         else{
-                            if(isLoanOngoing.loanOfficer === req.user.id){
+                           if(isLoanOngoing.loanOfficer === req.user.id){
 
                             const _id = req.body.id
+                            let newApprovalProcess = [] 
+                                   approvalProcess[parseInt(indexAssingnee)].status = "Declined" 
+                                   approvalProcess[parseInt(indexAssingnee)].remark = remark    
+                                      
+                                   newApprovalProcess = approvalProcess
+                                   console.log( newApprovalProcess)
+                              
+                                const loanapplication = new LoanOfficerApplication({
+                                       _id : req.body.id,
+                                       signed: isLoanOngoing.signed,
+                                       approvalProcess: newApprovalProcess,
+                                       loanType: isLoanOngoing.loanType,
+                                       form: isLoanOngoing.form,
+                                       branch: isLoanOngoing.branch,
+                                       branchId: isLoanOngoing.branchId,
+                                       status:   isLoanOngoing.status,
+                                       assignedTo  : isLoanOngoing.assignedTo,
+                                       loanOfficer: isLoanOngoing.loanOfficer,
+                                       customerApplicationId: isLoanOngoing.customerApplicationId,
+                                       declinedBy: isLoanOngoing.declinedBy,
+                                       approvalProcessId : isLoanOngoing.approvalProcessId,
+                                       groupId: isLoanOngoing.groupId
+                                    });
+                           
+                           
+                           
+                                 const changeApprovalStatus = await LoanOfficerApplication.updateOne( {_id}, loanapplication)
+                                     
+                         if(changeApprovalStatus.nModified === 1){
                             
                             console.log("declined")
                             const  signed= {"name": req.user.fullName, "remark": remark, "title": "Loan officer", "user_id":req.user.id}  
                             const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                             const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Declined" });         
                             res.status(200).send({message:"Loan declined  successfully"})
-
+                          }
+                        }else{
+                            res.status(400).send({message:"This loan was not assigned to you. "})
                         }
                            
                     }            
@@ -629,13 +660,34 @@ exports.getLoanById = async (req, res) => {
  
  };
 
+ // count loan for user
+ exports.approvalLoanCount = async (req, res) => {
+    try{
+
+        const ongoingLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Ongoing"})
+        const completedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Completed"})
+        const declinedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Declined"})
+
+        console.log(countLoan)
+        res.status(200).send(
+            {
+                ongoingLoan:ongoingLoan,
+                completedLoan: completedLoan,
+                declinedLoan: declinedLoan
+
+            })
+     }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while counting users "})
+       }
+};
 
 
 
 
 
 
-    
+
 
     
 
