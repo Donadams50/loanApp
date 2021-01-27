@@ -667,7 +667,7 @@ exports.getLoanById = async (req, res) => {
         const ongoingLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Ongoing"})
         const completedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Completed"})
         const declinedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Declined"})
-        const totalLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id})
+        const totalLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id})
 
       
         res.status(200).send(
