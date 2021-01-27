@@ -198,7 +198,7 @@ exports.approvalGetAllLoan = async (req, res) => {
     try{
      const status5 = "Initiated"
      //   const branch = req.query.branch
-           const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id, status:!status5}).sort({"_id": -1})  
+           const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id}).sort({"_id": -1})  
            
            //index = a.filter( x => x.prop2 ==="yutu");
 
