@@ -10,6 +10,6 @@ module.exports = app => {
  app.get("/branch/count", verifyToken, isAdmin,  helper.countBranch)
  app.delete("/branch/:id", verifyToken, isAdmin,  helper.deleteBranch)
  app.put("/branch/:id", verifyToken, isAdmin,  helper.updateBranch)
- app.post("/loantype", verifyToken, isAdmin,  helper.createLoantype)
- app.get("/loantype", verifyToken,   helper.findAllLoantype)
+ app.post("/loan", verifyToken, isAdmin,  helper.createLoantype)
+ app.get("/loan", verifyToken,   helper.findAllLoantype)
 }
