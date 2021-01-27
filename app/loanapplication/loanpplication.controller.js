@@ -485,7 +485,9 @@ exports.declineRecommendation= async(req,res)=>{
 
                         }
                         else{
+                            const _id = req.body.id
                             const approvalProcess = isLoanOngoing.approvalProcess;
+                            indexAssingnee = await approvalProcess.findIndex( x => x.userInOffice === req.user.id)
                             if(isLoanOngoing.assignedTo === req.user.id){
                                 let newApprovalProcess = [] 
                                 approvalProcess[parseInt(indexAssingnee)].status = "Declined" 
@@ -582,7 +584,9 @@ exports.loanOfficerDeclineRecommendation= async(req,res)=>{
 
                         }
                         else{
+                            const _id = req.body.id
                             const approvalProcess = isLoanOngoing.approvalProcess;
+                            indexAssingnee = await approvalProcess.findIndex( x => x.userInOffice === req.user.id)
                            if(isLoanOngoing.loanOfficer === req.user.id){
 
                             const _id = req.body.id
