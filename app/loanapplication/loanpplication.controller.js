@@ -667,13 +667,15 @@ exports.getLoanById = async (req, res) => {
         const ongoingLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Ongoing"})
         const completedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Completed"})
         const declinedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Declined"})
+        const totalLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id})
 
-        console.log(countLoan)
+      
         res.status(200).send(
             {
                 ongoingLoan:ongoingLoan,
                 completedLoan: completedLoan,
-                declinedLoan: declinedLoan
+                declinedLoan: declinedLoan,
+                totalLoan: totalLoan
 
             })
      }catch(err){
@@ -682,7 +684,28 @@ exports.getLoanById = async (req, res) => {
        }
 };
 
+exports.LoanOfficerLoanCount = async (req, res) => {
+    try{
 
+        const ongoingLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Ongoing"})
+        const completedLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Completed"})
+        const declinedLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Declined"})
+        const totalLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id})
+
+      
+        res.status(200).send(
+            {
+                ongoingLoan:ongoingLoan,
+                completedLoan: completedLoan,
+                declinedLoan: declinedLoan,
+                totalLoan: totalLoan
+
+            })
+     }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while counting users "})
+       }
+};
 
 
 
