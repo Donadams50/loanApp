@@ -197,13 +197,18 @@ exports.loanOfficerGetAllLoan = async (req, res) => {
 exports.approvalGetAllLoan = async (req, res) => {
     try{
      const status5 = "Initiated"
-     //   const branch = req.query.branch
-           const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id}).sort({"_id": -1})  
-           
-           //index = a.filter( x => x.prop2 ==="yutu");
-
+         const status = req.query.status
+         if(status){
+           const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status}).sort({"_id": -1})  
            console.log(req.user.id)
            res.status(200).send(getLoanAssignedToMe)
+           //index = a.filter( x => x.prop2 ==="yutu");
+         }else{
+            const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id}).sort({"_id": -1})  
+            console.log(req.user.id)
+            res.status(200).send(getLoanAssignedToMe)
+         }
+           
               
        }catch(err){
            console.log(err)
