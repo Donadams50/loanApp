@@ -37,6 +37,19 @@ db.mongoose
  require("./app/office/office.routes.js")(app)
  require("./app/group/group.routes.js")(app)
 
+
+
+
+
+//  random = Math.random().toString(36).slice(-8);
+
+//      
+//          file = req.files.Image;
+//          Image = random+req.files.Image.name;  
+//          file.mv('public/images/'+Image); 
+//          console.log("Image") 
+//          
+//      
 // Connect to port 
 const port = process.env.PORT || 5000     
 
