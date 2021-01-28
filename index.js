@@ -36,20 +36,20 @@ db.mongoose
  require("./app/loanapplication/loanapplication.routes.js")(app)
  require("./app/office/office.routes.js")(app)
  require("./app/group/group.routes.js")(app)
+ require("./app/files/files.routes.js")(app)
 
 
+ app.post('/documents',  (req,res)=>{
+ random = Math.random().toString(36).slice(-8);
 
-
-
-//  random = Math.random().toString(36).slice(-8);
-
-//      
-//          file = req.files.Image;
-//          Image = random+req.files.Image.name;  
-//          file.mv('public/images/'+Image); 
-//          console.log("Image") 
-//          
-//      
+     
+         file = req.files.file;
+         Image = random+req.files.file.name;  
+         console.log(Image) 
+         file.mv('public/files/'+Image); 
+         console.log("Image") 
+         
+     })
 // Connect to port 
 const port = process.env.PORT || 5000     
 
