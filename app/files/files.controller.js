@@ -46,7 +46,7 @@ exports.postDocument = async(req,res)=>{
             file = req.files.file;
             const fileName = random+req.files.file.name;  
             console.log(fileName) 
-            file.mv('public/images/'+fileName); 
+            file.mv('public/files/'+fileName); 
                      
                 res.status(201).send(
                     {
