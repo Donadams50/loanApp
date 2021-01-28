@@ -5,7 +5,7 @@ module.exports = app => {
    
 
   app.post("/image",  files.postImage)
-  //app.post("/document",   files.postDocument)
+  app.post("/document",   files.postDocument)
   
 
 

@@ -5,21 +5,21 @@ exports.postImage = async(req,res)=>{
       
         res.status(400).send({message:"Content cannot be empty"});
      }
-     console.log(req.files)
+   
 
         
          try{              
 
             random = Math.random().toString(36).slice(-8);   
             file = req.files.image;
-            const Image = random+req.files.image.name;  
+            const imageName = random+req.files.image.name;  
             console.log(Image) 
-            file.mv('public/files/'+Image); 
+            file.mv('public/images/'+imageName); 
                      
                 res.status(201).send(
                     {
                         message:"Picture uploaded successfully ",
-                        imageUrl: Image 
+                        imageUrl: imageName 
                     }
                     
                     )
@@ -27,6 +27,38 @@ exports.postImage = async(req,res)=>{
             }catch(err){
                 console.log(err)
                 res.status(500).send({message:"Error while uploading image "})
+            }
+       
+   
+}
+
+exports.postDocument = async(req,res)=>{
+    if (!req.files){
+      
+        res.status(400).send({message:"Content cannot be empty"});
+     }
+   
+
+        
+         try{              
+
+            random = Math.random().toString(36).slice(-8);   
+            file = req.files.file;
+            const fileName = random+req.files.file.name;  
+            console.log(fileName) 
+            file.mv('public/images/'+fileName); 
+                     
+                res.status(201).send(
+                    {
+                        message:"File uploaded successfully ",
+                        imageUrl: fileName 
+                    }
+                    
+                    )
+            
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while uploading file "})
             }
        
    
