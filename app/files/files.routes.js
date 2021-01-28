@@ -1,11 +1,11 @@
 module.exports = app => {
     const files = require("./files.controller");
     const jwtTokenUtils = require('../helpers/jwtTokenUtils')
-    const { verifyToken, isAdmin } = jwtTokenUtils;
+    const { verifyToken } = jwtTokenUtils;
    
 
-  app.post("/image",  files.postImage)
-  app.post("/document",   files.postDocument)
+  app.post("/image", verifyToken,  files.postImage)
+  app.post("/document", verifyToken,   files.postDocument)
   
 
 
