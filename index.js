@@ -1,5 +1,3 @@
-// import packages into the app. Express, body-parser, 
-//const sql=require("./app/Database/db")
 const express = require('express');
 const app = express();
 const bodyparser = require('body-parser');
@@ -9,6 +7,10 @@ const cors = require("cors");
 //const uuid = require('uuid')
 app.use(cors()); 
 const path = require('path')
+const fileUpload=require('express-fileupload')
+ app.use(fileUpload())
+
+//set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 const axios = require('axios')
 
