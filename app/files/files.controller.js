@@ -1,53 +1,33 @@
 
 
 exports.postImage = async(req,res)=>{
-    if (!req.body){
+    if (!req.files){
+      
         res.status(400).send({message:"Content cannot be empty"});
-    }
-console.log(req.body)
+     }
+     console.log(req.files)
 
-    const {  officeTitle , officeTitleBranch} = req.body;
-  
-    if (  officeTitle  ){
-        if ( officeTitle===""    ){
-            res.status(400).send({
-                message:"Incorrect entry format"
-            });
-    }else{  
-              const combinedOfficeBranch = ''+officeTitle+' '+officeTitleBranch+''
-            const office = new Offices({
-            
-                officeTitleBranch: officeTitleBranch,
-                officeTitle: officeTitle,
-                isAssigned: false,
-                userInOffice: "" ,
-                userNameInOffice: "",
-                combinedOfficeBranch: combinedOfficeBranch         
-
-                
-              });
         
-            try{   
-                const isOfficeExist = await Offices.findOne({combinedOfficeBranch: combinedOfficeBranch} )
+         try{              
 
-                 if(isOfficeExist){
-                    res.status(400).send({
-                        message:"Office already exist"
-                    });
-                 }else{
-
-                            const saveOffice = await  office.save()
-                            console.log(saveOffice)                
-                            res.status(201).send({message:"Office created"})
-                        }
+            random = Math.random().toString(36).slice(-8);   
+            file = req.files.image;
+            const Image = random+req.files.image.name;  
+            console.log(Image) 
+            file.mv('public/files/'+Image); 
+                     
+                res.status(201).send(
+                    {
+                        message:"Picture uploaded successfully ",
+                        imageUrl: Image 
+                    }
+                    
+                    )
+            
             }catch(err){
                 console.log(err)
-                res.status(500).send({message:"Error while creating office "})
+                res.status(500).send({message:"Error while uploading image "})
             }
-        }
-    }else{
-        res.status(400).send({
-            message:"Incorrect entry format"
-        });
-    }
+       
+   
 }

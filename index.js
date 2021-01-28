@@ -40,14 +40,7 @@ db.mongoose
 
 
  app.post('/documents',  (req,res)=>{
- random = Math.random().toString(36).slice(-8);
-
-     
-         file = req.files.file;
-         Image = random+req.files.file.name;  
-         console.log(Image) 
-         file.mv('public/files/'+Image); 
-         console.log("Image") 
+ 
          
      })
 // Connect to port 
