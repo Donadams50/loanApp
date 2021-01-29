@@ -400,12 +400,11 @@ exports.forgotPassword = async(req,res)=>{
                 message:"Incorrect entry format"
             });
         }
-    }
-
+}
 
    
 // admin reset password
-    exports.resetPassword = async(req,res)=>{
+ exports.resetPassword = async(req,res)=>{
         if (!req.body){
             res.status(400).send({message:"Content cannot be empty"});
         }
@@ -478,7 +477,152 @@ exports.forgotPassword = async(req,res)=>{
                 message:"Incorrect entry format"
             });
         }
+ }
+
+ // admin forget password
+exports.approvalForgotPassword = async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
     }
+console.log(req.body)
+  // let {myrefCode} = req.query;
+    const {   email } = req.body;
+  
+    if ( email   ){
+        if ( email===""   ){
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+        }else{
+            
+            
+
+         
+            try{
+              const isUserExist = await Members.findOne({email: email} )
+              const isUserExist2 = await Auths.findOne({email: email} )
+                if(isUserExist && isUserExist2){
+                const code = uuid.v1()
+                            
+                //const email = req.body.email.toLowerCase();
+                const _id = isUserExist._id;
+                const saveCode = await Members.findOneAndUpdate({ _id }, { forgotPasswordCode: code });
+                console.log(saveCode)
+                if(isUserExist && isUserExist2){
+                const username = isUserExist.fullName;
+                const emailFrom = 'astrapay@astrapolaris.com';
+                const subject = 'Reset password link';                      
+                const hostUrl = 'loan-admin.netlify.app/changepassword?code='+code+'' 
+                const hostUrl2 = 'https://loan-admin.netlify.app/changepassword?code='+code+''    
+                const   text = "Your password reset link is shown below. Click on the reset button to change your password"
+                const emailTo = req.body.email.toLowerCase();
+                const link = `${hostUrl}`;
+                const link2 = `${hostUrl2}`;
+                 processEmailForgotPassword(emailFrom, emailTo, subject, link, link2, text, username);
+                  
+                  res.status(201).send({message:"Reset link sent succesfully"})
+
+                }else{
+                    res.status(400).send({message:"Error while resetting password"})
+                }
+                                 
+               }
+                else{
+
+
+
+                     res.status(400).send({message:"User does not exist"})
+
+          }
+                       
+                
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while resetting password   "})
+            }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
+
+// admin reset password
+exports.approvalResetPassword = async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+console.log(req.body)
+  // let {myrefCode} = req.query;
+    const { password, code} = req.body;
+  
+    if (   password && code ){
+        if ( password === " " || code === " "  ){
+            res.status(400).send({
+                message:"One of the entry is empty"
+            });
+        }else{
+            
+            
+
+         
+            try{
+              
+              const getuser = await Members.findOne({forgotPasswordCode: req.body.code} )
+              
+              if(getuser){
+                console.log(getuser)
+              const temporaryPassword = req.body.password
+               
+                const newpassword = await passwordUtils.hashPassword(temporaryPassword);
+                console.log(newpassword)
+                
+                const getAuth = await Auths.findOne({email: getuser.email} )
+               // const getAuth = await Auths.findOne({email: getuser.email} )
+               
+                
+                const _id =  getAuth._id
+                const newForgotPasswordCode = ""
+                const updatePassword = await Auths.findOneAndUpdate({ _id}, { password: newpassword });
+                if(updatePassword){
+                const _id =   getuser._id 
+                const updateCode = await Members.findOneAndUpdate({_id}, { forgotPasswordCode: newForgotPasswordCode  });
+                console.log(updatePassword)
+                console.log(updateCode)
+                
+
+                const emailFrom = 'astrapay@astrapolaris.com';
+                const subject = 'Reset Password Succesful ';                      
+                const hostUrl = "astrapolaris.com.ng"
+                 const hostUrl2 = "https://astrapolaris.com.ng"    
+                const   text = 'Your password has been changed succesfully'
+                const emailTo = getuser.email.toLowerCase()
+                const link = `${hostUrl}`;
+                const link2 = `${hostUrl2}`;
+                const fullName = getuser.fullName
+                 processEmail(emailFrom, emailTo, subject, link, link2, text, fullName);
+                  
+                res.status(200).send({message:"Password reset was succesfull"})
+                }            
+             
+            }  else{
+                res.status(400).send({
+                    message:"This link you selected has already been used. "
+                });
+            } 
+                
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating profile "})
+            }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
 
 // user change password
 exports.changePassword = async(req,res)=>{
