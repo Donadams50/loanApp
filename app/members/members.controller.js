@@ -449,8 +449,8 @@ exports.forgotPassword = async(req,res)=>{
  
                     const emailFrom = 'astrapay@astrapolaris.com';
                     const subject = 'Reset Password Succesful ';                      
-                    const hostUrl = "astrapolaris.com.ng"
-                     const hostUrl2 = "https://astrapolaris.com.ng"    
+                    const hostUrl = "loan-admin.netlify.app"
+                     const hostUrl2 = "https://loan-admin.netlify.app"    
                     const   text = 'Your password has been changed succesfully'
                     const emailTo = getuser.email.toLowerCase()
                     const link = `${hostUrl}`;
