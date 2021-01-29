@@ -512,8 +512,8 @@ console.log(req.body)
                 const username = isUserExist.fullName;
                 const emailFrom = 'astrapay@astrapolaris.com';
                 const subject = 'Reset password link';                      
-                const hostUrl = 'loan-admin.netlify.app/changepassword?code='+code+'' 
-                const hostUrl2 = 'https://loan-admin.netlify.app/changepassword?code='+code+''    
+                const hostUrl = 'approval-portal.netlify.app/resetpassword?code='+code+'' 
+                const hostUrl2 = 'https://approval-portal.netlify.app/resetpassword?code='+code+''    
                 const   text = "Your password reset link is shown below. Click on the reset button to change your password"
                 const emailTo = req.body.email.toLowerCase();
                 const link = `${hostUrl}`;
@@ -594,8 +594,8 @@ console.log(req.body)
 
                 const emailFrom = 'astrapay@astrapolaris.com';
                 const subject = 'Reset Password Succesful ';                      
-                const hostUrl = "astrapolaris.com.ng"
-                 const hostUrl2 = "https://astrapolaris.com.ng"    
+                const hostUrl = "approval-portal.netlify.app"
+                 const hostUrl2 = "https://approval-portal.netlify.app"    
                 const   text = 'Your password has been changed succesfully'
                 const emailTo = getuser.email.toLowerCase()
                 const link = `${hostUrl}`;
