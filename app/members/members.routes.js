@@ -16,4 +16,6 @@ module.exports = app => {
     app.post("/forgotpassword",  member.forgotPassword)
     app.post("/reset",    member.resetPassword)
     app.post("/changepassword",verifyToken,  member.changePassword)
+    // app.post("/approval/forgotpassword",  member.approvalForgotPassword)
+    // app.post("/approval/reset",    member.approvalResetPassword)
 }
