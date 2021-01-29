@@ -333,7 +333,7 @@ exports.findUnasignedLoan = async (req, res) => {
 
 
 
-
+// admin forget password
 exports.forgotPassword = async(req,res)=>{
         if (!req.body){
             res.status(400).send({message:"Content cannot be empty"});
@@ -403,71 +403,8 @@ exports.forgotPassword = async(req,res)=>{
     }
 
 
-    exports.changePassword = async(req,res)=>{
-        if (!req.body){
-            res.status(400).send({message:"Content cannot be empty"});
-        }
-    console.log(req.body)
-      // let {myrefCode} = req.query;
-        const { oldPassword, newPassword} = req.body;
-      
-        if ( oldPassword && newPassword  ){
-            if ( newPassword==="" || oldPassword===""  ){
-                res.status(400).send({
-                    message:"Incorrect entry format"
-                });
-            }else{
-                
-                
-    
-             
-                try{
-                    const email = req.user.email
-                    console.log(req.user.email)
-                //   const isUserExist = await Members.findOne({email: req.user.email} )
-                  const getpassword = await Auths.findOne({email: email} )
-                  const retrievedPassword = getpassword.password
-                  const isMatch = await passwordUtils.comparePassword(oldPassword.toLowerCase(), retrievedPassword);
-                  console.log(isMatch )
-                   if (isMatch){ 
-                    const newpassword = await passwordUtils.hashPassword(req.body.newPassword.toLowerCase());
-                    console.log("newpassword")
-                    console.log(newpassword) 
-                    console.log(getpassword._id)              
-                    //const email = req.body.email.toLowerCase();
-                    const _id  = getpassword._id
-                    const updatePassword = await Auths.findOneAndUpdate({ _id }, { password: newpassword });
-                    console.log(updatePassword)
- 
-                    const emailFrom = 'Ahiajara Skin care    <noreply@Ahiajara.com>';
-                    const subject = 'Succesful Registration link';                      
-                    const hostUrl = "ahiajara.netlify.app/dashboard"
-                    const hostUrl2 = "https://ahiajara.netlify.app/dashboard"    
-                    const   text = "Your password has just been changed"
-                    const emailTo = req.user.email.toLowerCase();
-                    const link = `${hostUrl}`;
-                    const link2 = `${hostUrl2}`;
-                     processEmail(emailFrom, emailTo, subject, link, link2, text, req.user.firstName);
-                      
-                    res.status(200).send({message:"Password changed succesfully"})
-                                     
-                 
-                   }else{
-                    res.status(400).send({message:"Incorrect old password "})
-                   }        
-                    
-                }catch(err){
-                    console.log(err)
-                    res.status(500).send({message:"Error while creating profile "})
-                }
-            }
-        }else{
-            res.status(400).send({
-                message:"Incorrect entry format"
-            });
-        }
-    }
-
+   
+// admin reset password
     exports.resetPassword = async(req,res)=>{
         if (!req.body){
             res.status(400).send({message:"Content cannot be empty"});
@@ -542,6 +479,61 @@ exports.forgotPassword = async(req,res)=>{
             });
         }
     }
+
+// user change password
+exports.changePassword = async(req,res)=>{
+    if (!req.body){
+        res.status(400).send({message:"Content cannot be empty"});
+    }
+console.log(req.body)
+  // let {myrefCode} = req.query;
+    const { oldPassword, newPassword} = req.body;
+  
+    if ( oldPassword && newPassword  ){
+        if ( newPassword==="" || oldPassword===""  ){
+            res.status(400).send({
+                message:"Incorrect entry format"
+            });
+        }else{
+                    
+            try{
+                const email = req.user.email
+                console.log(req.user.email)
+            //   const isUserExist = await Members.findOne({email: req.user.email} )
+              const getpassword = await Auths.findOne({email: email} )
+              const retrievedPassword = getpassword.password
+              const isMatch = await passwordUtils.comparePassword(oldPassword.toLowerCase(), retrievedPassword);
+              console.log(isMatch )
+               if (isMatch){ 
+                const newpassword = await passwordUtils.hashPassword(req.body.newPassword.toLowerCase());
+                console.log("newpassword")
+                console.log(newpassword) 
+                console.log(getpassword._id)              
+                //const email = req.body.email.toLowerCase();
+                const _id  = getpassword._id
+                const updatePassword = await Auths.findOneAndUpdate({ _id }, { password: newpassword });
+                console.log(updatePassword)
+
+                
+                  
+                res.status(200).send({message:"Password changed succesfully"})
+                                 
+             
+               }else{
+                res.status(400).send({message:"Incorrect old password "})
+               }        
+                
+            }catch(err){
+                console.log(err)
+                res.status(500).send({message:"Error while creating profile "})
+            }
+        }
+    }else{
+        res.status(400).send({
+            message:"Incorrect entry format"
+        });
+    }
+}
 
 
 // process email one

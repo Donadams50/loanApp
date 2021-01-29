@@ -15,5 +15,5 @@ module.exports = app => {
     app.get("/member/count",  verifyToken, isAdmin,  member.countUsers)
     app.post("/forgotpassword",  member.forgotPassword)
     app.post("/reset",    member.resetPassword)
-    app.post("/changepassword",  member.changePassword)
+    app.post("/changepassword",verifyToken,  member.changePassword)
 }
