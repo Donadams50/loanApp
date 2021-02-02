@@ -51,7 +51,7 @@ exports.postDocument = async(req,res)=>{
                 res.status(201).send(
                     {
                         message:"File uploaded successfully ",
-                        imageUrl: fileName 
+                        imageUrl: "files/"+fileName+""
                     }
                     
                     )
