@@ -4,6 +4,7 @@ const CustomerApplication = db.customerapplications;
 const LoanOfficerApplication = db.loanofficerapplications;
 const ApprovalProcess = db.approvalprocess;
 const Groups = db.groups;
+const Members = db.profiles;
 const sendemail = require('../helpers/emailhelper.js');
 
 const uuid = require('uuid')
@@ -223,7 +224,7 @@ exports.loanOfficerRecommendation= async(req,res)=>{
     }
      console.log(req.body)
 
-    const {  remark , id } = req.body;
+    const {  remark , id , imageUrls} = req.body;
   
         if ( remark, id ){
             if ( remark==="" || id=== ""  ){
@@ -281,14 +282,22 @@ exports.loanOfficerRecommendation= async(req,res)=>{
                                     console.log("indexAssingnee");
                                     console.log(indexAssingnee);
                                     const assignedTo = approvalProcess[ parseInt(indexAssingnee + 1)].userInOffice
-                                    const  signed= {"name": req.user.fullName, "remark": remark, "title": "Loan officer", "user_id":req.user.id}  
+                                    const  signed= {"name": req.user.fullName, "remark": remark, "title": "Loan officer", "user_id":req.user.id ,"imageUrls": imageUrls || ""}  
                                     const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                     const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
-                                   const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Ongoing" });   
-                                    
-                                    console.log("still in process") 
-                                   
+                                    const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Ongoing" });   
+                                    const getuser = await Members.findOne({_id: assignedTo} )                                   
+                                        const emailFrom = 'astrapay@astrapolaris.com';
+                                        const subject = 'Recomendation alert ';                      
+                                        const hostUrl = "approval-portal.netlify.app"
+                                        const hostUrl2 = "https://approval-portal.netlify.app"    
+                                        const   text = 'You are next in line to sign this loan requeast'
+                                        const emailTo = getuser.email.toLowerCase()
+                                        const link = `${hostUrl}`;
+                                        const link2 = `${hostUrl2}`;
+                                        const fullName = getuser.fullName
 
+                                     processEmail(emailFrom, emailTo, subject, link, link2, text, fullName);
                                    res.status(200).send({message:"Recommendation posted  successfully"})
                                    }
                                    else{
@@ -324,7 +333,7 @@ exports.approvalRecommendation= async(req,res)=>{
     }
      console.log(req.body)
 
-    const {  remark , id } = req.body;
+    const {  remark , id , imageUrls} = req.body;
   
         if ( remark, id ){
             if ( remark==="" || id=== ""  ){
@@ -386,9 +395,12 @@ exports.approvalRecommendation= async(req,res)=>{
                               const changeApprovalStatus = await LoanOfficerApplication.updateOne( {_id}, loanapplication)
                                 console.log(changeApprovalStatus) 
                                 if(changeApprovalStatus.nModified === 1){
-                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
+                                const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id, "imageUrls": imageUrls || ""}  
                                 const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                 const changeStatus = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Completed" });                      
+                               
+                               
+                               
                                 res.status(200).send({message:"Recommendation posted  successfully"})
                                 } 
                                  else{
@@ -429,10 +441,21 @@ exports.approvalRecommendation= async(req,res)=>{
                                      if(changeApprovalStatus.nModified === 1){
                                        const assignedTo = approvalProcess[ parseInt(indexAssingnee + 1)].userInOffice
                                        console.log("still in process")               
-                                        const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id}  
+                                        const  signed= {"name": req.user.fullName, "remark": remark, "title": req.user.officeTitle, "user_id":req.user.id, "imageUrls": imageUrls || ""}  
                                         const postRecommendation = await LoanOfficerApplication.updateOne({_id: id}, { $addToSet: { signed: [signed] } } ) 
                                         const postNextToAssign = await LoanOfficerApplication.findOneAndUpdate({ _id }, { assignedTo: assignedTo });         
-                                       
+                                        const getuser = await Members.findOne({_id: assignedTo} )                                   
+                                        const emailFrom = 'astrapay@astrapolaris.com';
+                                        const subject = 'Recomendation alert ';                      
+                                        const hostUrl = "approval-portal.netlify.app"
+                                        const hostUrl2 = "https://approval-portal.netlify.app"    
+                                        const   text = 'You are next in line to sign this loan requeast'
+                                        const emailTo = getuser.email.toLowerCase()
+                                        const link = `${hostUrl}`;
+                                        const link2 = `${hostUrl2}`;
+                                        const fullName = getuser.fullName
+
+                                     processEmail(emailFrom, emailTo, subject, link, link2, text, fullName);
                                         res.status(200).send({message:"Recommendation posted  successfully"})
                                      }else{
                                         res.status(400).send({message:"Error while posting recommendation "})
