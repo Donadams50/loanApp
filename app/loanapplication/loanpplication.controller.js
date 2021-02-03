@@ -605,7 +605,7 @@ exports.loanOfficerDeclineRecommendation= async(req,res)=>{
 
                         const isLoanOngoing = await LoanOfficerApplication.findOne({_id: id} )
                         console.log(isLoanOngoing.status) 
-                        if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined" || "Ongoing"){
+                        if(isLoanOngoing.status === "Completed" || isLoanOngoing.status === "Declined"){
                             res.status(400).send({
                                 message:"This loan has been completed , declined  or approved"
                             });
