@@ -11,5 +11,5 @@ module.exports = app => {
  app.delete("/branch/:id", verifyToken, isAdmin,  helper.deleteBranch)
  app.put("/branch/:id", verifyToken, isAdmin,  helper.updateBranch)
  app.post("/loan", verifyToken, isAdmin,  helper.createLoantype)
- app.get("/loan", verifyToken,   helper.findAllLoantype)
+ app.get("/loan",    helper.findAllLoantype)
 }

@@ -7,7 +7,7 @@ module.exports = app => {
     const upload = require('../cloudinary/multer.js');
   
   app.post("/image", verifyToken,   files.postImage)
-  app.post("/document", verifyToken, upload.single("files"),   files.postDocument)
+  app.post("/document", verifyToken, upload.single("file"),   files.postDocument)
   
 
 
