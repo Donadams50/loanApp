@@ -7,8 +7,8 @@ const cors = require("cors");
 //const uuid = require('uuid')
 app.use(cors()); 
 const path = require('path')
-const fileUpload=require('express-fileupload')
- app.use(fileUpload())
+// const fileUpload=require('express-fileupload')
+//  app.use(fileUpload())
 
 //set static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -39,7 +39,7 @@ db.mongoose
  require("./app/files/files.routes.js")(app)
 
 
- app.post('/documents',  (req,res)=>{
+ app.post('/',  (req,res)=>{
  
          
      })

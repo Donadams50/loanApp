@@ -3,9 +3,11 @@ module.exports = app => {
     const jwtTokenUtils = require('../helpers/jwtTokenUtils')
     const { verifyToken } = jwtTokenUtils;
    
-
-  app.post("/image", verifyToken,  files.postImage)
-  app.post("/document", verifyToken,   files.postDocument)
+    require('../cloudinary/cloudinary.js')
+    const upload = require('../cloudinary/multer.js');
+  
+  app.post("/image", verifyToken,   files.postImage)
+  app.post("/document", verifyToken, upload.single("files"),   files.postDocument)
   
 
 
