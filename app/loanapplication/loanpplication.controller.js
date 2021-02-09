@@ -6,11 +6,11 @@ const ApprovalProcess = db.approvalprocess;
 const Groups = db.groups;
 const Members = db.profiles;
 const sendemail = require('../helpers/emailhelper.js');
-const momemt  = require('moment')
+const moment  = require('moment')
 const uuid = require('uuid')
 
 
-// Customer loan application
+//Customer loan application
 
 exports.customerApplyLoan = async(req,res)=>{
     if (!req.body){
@@ -583,9 +583,7 @@ exports.declineRecommendation= async(req,res)=>{
 }
 
 
-//loan officer decline loan
-
-// approval declines  and add remark
+// loan officer  declines loan and add remark
 exports.loanOfficerDeclineRecommendation= async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -678,7 +676,7 @@ exports.loanOfficerDeclineRecommendation= async(req,res)=>{
 }
 
 
-// find all loan officer
+// find  loan by loan id
 exports.getLoanById = async (req, res) => {
     try{
         
@@ -695,7 +693,7 @@ exports.getLoanById = async (req, res) => {
  
  };
 
- // count loan for user
+ // approval loan count
  exports.approvalLoanCount = async (req, res) => {
     try{
 
@@ -719,6 +717,8 @@ exports.getLoanById = async (req, res) => {
        }
 };
 
+
+// loan officer loan count
 exports.LoanOfficerLoanCount = async (req, res) => {
     try{
 
@@ -743,7 +743,7 @@ exports.LoanOfficerLoanCount = async (req, res) => {
 };
 
 
-
+// loan officer gets report
 exports.reportLoanOfficer = async (req, res) => {
     try{
      //   const status = "Initiated"
@@ -776,6 +776,8 @@ exports.reportLoanOfficer = async (req, res) => {
        }
 };
 
+
+//approval gets reports
 exports.reportApproval = async (req, res) => {
     try{
      //   const status = "Initiated"
