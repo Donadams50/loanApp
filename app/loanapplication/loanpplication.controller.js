@@ -751,13 +751,19 @@ exports.reportLoanOfficer = async (req, res) => {
        const status = req.query.status
        const fromDate = req.query.fromDate
        const toDate = req.query.toDate
+       console.log(fromDate)
+       console.log(toDate)
+       var startDate = moment(fromDate).utcOffset('+0700').format("YYYY-MM-DDTHH:mm:ss.SSSZ"); //req.params.startTime = 2016-09-25 00:00:00
+        var endDate   = moment(toDate).utcOffset('+0700').format("YYYY-MM-DDTHH:mm:ss.SSSZ"); //req.params.endTime = 2016-09-25 01:00:00
 
-       if(status){
+
+       if(disbursed){
          const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, disbursed: disbursed, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})  
-                console.log(req.user.id)
+                console.log("ope")
                 res.status(200).send(getLoanAssignedToMe)
             }else{
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})  
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt: { $gt:startDate, $lt:endDate} }).sort({"_id": -1})  
+                console.log("kotope")
                 console.log(req.user.id)
                 res.status(200).send(getLoanAssignedToMe)
                 
