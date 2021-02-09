@@ -11,7 +11,6 @@ const uuid = require('uuid')
 
 
 //Customer loan application
-
 exports.customerApplyLoan = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -52,7 +51,7 @@ console.log(req.body)
     }
 }
 
-// loan officer submit loan or apply newly
+//loan officer submit loan or apply newly
 exports.loanOfficerApplyLoan = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -218,7 +217,7 @@ exports.approvalGetAllLoan = async (req, res) => {
 };
 
 
-// approval recommends and add remark
+//approval recommends and add remark
 exports.loanOfficerRecommendation= async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -327,7 +326,7 @@ exports.loanOfficerRecommendation= async(req,res)=>{
     }
 }
 
-// approval recommends and add remark
+//approval recommends and add remark
 exports.approvalRecommendation= async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -486,7 +485,7 @@ exports.approvalRecommendation= async(req,res)=>{
     }
 }
 
-// approval declines  and add remark
+//approval declines  and add remark
 exports.declineRecommendation= async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -583,7 +582,7 @@ exports.declineRecommendation= async(req,res)=>{
 }
 
 
-// loan officer  declines loan and add remark
+//loan officer  declines loan and add remark
 exports.loanOfficerDeclineRecommendation= async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
@@ -676,7 +675,7 @@ exports.loanOfficerDeclineRecommendation= async(req,res)=>{
 }
 
 
-// find  loan by loan id
+//find  loan by loan id
 exports.getLoanById = async (req, res) => {
     try{
         
@@ -693,7 +692,7 @@ exports.getLoanById = async (req, res) => {
  
  };
 
- // approval loan count
+ //approval loan count
  exports.approvalLoanCount = async (req, res) => {
     try{
 
@@ -718,7 +717,7 @@ exports.getLoanById = async (req, res) => {
 };
 
 
-// loan officer loan count
+//loan officer loan count
 exports.LoanOfficerLoanCount = async (req, res) => {
     try{
 
@@ -743,7 +742,7 @@ exports.LoanOfficerLoanCount = async (req, res) => {
 };
 
 
-// loan officer gets report
+//loan officer gets report
 exports.reportLoanOfficer = async (req, res) => {
     try{
      //   const status = "Initiated"
@@ -753,20 +752,18 @@ exports.reportLoanOfficer = async (req, res) => {
        const toDate = req.query.toDate
        console.log(fromDate)
        console.log(toDate)
-       var startDate = moment(fromDate).utcOffset('+0700').format("YYYY-MM-DDTHH:mm:ss.SSSZ"); //req.params.startTime = 2016-09-25 00:00:00
-        var endDate   = moment(toDate).utcOffset('+0700').format("YYYY-MM-DDTHH:mm:ss.SSSZ"); //req.params.endTime = 2016-09-25 01:00:00
 
 
        if(disbursed){
-         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, disbursed: disbursed, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})  
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, disbursed: disbursed, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
                 console.log("ope")
                 res.status(200).send(getLoanAssignedToMe)
             }else{
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt: { $gt:startDate, $lt:endDate} }).sort({"_id": -1})  
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+          //const query = {, 
                 console.log("kotope")
                 console.log(req.user.id)
-                res.status(200).send(getLoanAssignedToMe)
-                
+                res.status(200).send(getLoanAssignedToMe)           
             }
            
               
@@ -787,12 +784,12 @@ exports.reportApproval = async (req, res) => {
        const toDate = req.query.toDate
 
        if(disbursed){
-         const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, disbursed : disbursed, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})  
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, disbursed : disbursed, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
               
          console.log(req.user.id)
                 res.status(200).send(getLoanAssignedToMe)
             }else{
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})             
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) }  }).sort({"_id": -1})             
                 console.log(req.user.id)
                  res.status(200).send(getLoanAssignedToMe)
                 
