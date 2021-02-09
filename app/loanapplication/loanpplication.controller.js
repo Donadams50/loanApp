@@ -744,21 +744,49 @@ exports.LoanOfficerLoanCount = async (req, res) => {
 
 
 
-exports.report = async (req, res) => {
+exports.reportLoanOfficer = async (req, res) => {
     try{
      //   const status = "Initiated"
+       const disbursed = req.query.disbursed
        const status = req.query.status
        const fromDate = req.query.fromDate
        const toDate = req.query.toDate
 
-            if(status){
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, }).sort({"_id": -1})  
+       if(status){
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, disbursed: disbursed, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})  
                 console.log(req.user.id)
                 res.status(200).send(getLoanAssignedToMe)
             }else{
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id}).sort({"_id": -1})  
-           console.log(req.user.id)
-           res.status(200).send(getLoanAssignedToMe)
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})  
+                console.log(req.user.id)
+                res.status(200).send(getLoanAssignedToMe)
+                
+            }
+           
+              
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while getting loan request "})
+       }
+};
+
+exports.reportApproval = async (req, res) => {
+    try{
+     //   const status = "Initiated"
+       const disbursed = req.query.disbursed
+       const status = req.query.status
+       const fromDate = req.query.fromDate
+       const toDate = req.query.toDate
+
+       if(disbursed){
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, disbursed : disbursed, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})  
+              
+         console.log(req.user.id)
+                res.status(200).send(getLoanAssignedToMe)
+            }else{
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, createdAt: { $gt:fromDate, $lt:toDate} }).sort({"_id": -1})             
+                console.log(req.user.id)
+                 res.status(200).send(getLoanAssignedToMe)
                 
             }
            
