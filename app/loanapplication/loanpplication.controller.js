@@ -217,6 +217,7 @@ exports.approvalGetAllLoan = async (req, res) => {
        }
 };
 
+
 // approval recommends and add remark
 exports.loanOfficerRecommendation= async(req,res)=>{
     if (!req.body){
@@ -742,6 +743,31 @@ exports.LoanOfficerLoanCount = async (req, res) => {
 };
 
 
+
+exports.report = async (req, res) => {
+    try{
+     //   const status = "Initiated"
+       const status = req.query.status
+       const fromDate = req.query.fromDate
+       const toDate = req.query.toDate
+
+            if(status){
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, }).sort({"_id": -1})  
+                console.log(req.user.id)
+                res.status(200).send(getLoanAssignedToMe)
+            }else{
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id}).sort({"_id": -1})  
+           console.log(req.user.id)
+           res.status(200).send(getLoanAssignedToMe)
+                
+            }
+           
+              
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while getting loan request "})
+       }
+};
 
 
 

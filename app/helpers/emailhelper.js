@@ -25,7 +25,7 @@ exports.emailUtility= async (emailFrom, emailTo, emailSubject,  emailLink, email
         });
   const handlebarsOptions= {
       viewEngine:{
-          extName:'index.handlebars',
+          extName:'index.handlebars', 
           partialsDir: './',
           layoutsDir: './',
           defaultLayout:'./app/helpers/index'
@@ -207,4 +207,5 @@ const handlebarsOptions= {
 }
    
 
-}
+}  
+

@@ -55,7 +55,7 @@ console.log(req.body)
                 res.status(400).send({message:" Email already exists"})
                }else{
                 auths.password = await passwordUtils.hashPassword(passwordGenerated.toLowerCase());
-                 const emailFrom = 'astrapay@astrapolaris.com';
+                 const emailFrom = 'astraloan@astrapolaris.com';
                 const subject = 'Password notification';                      
                 const hostUrl = "loan-admin.netlify.app"
                 const hostUrl2 = "https://loan-admin.netlify.app" 
