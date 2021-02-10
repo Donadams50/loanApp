@@ -804,12 +804,15 @@ exports.reportApproval = async (req, res) => {
 
 exports.markDisbursed = async (req, res) => {
     try{
-     
-        const   _id = req.params.id         
+        console.log("err")
+        const   _id = req.body.id         
     
-        const markDisbursed = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Disbursed" });          
-            if(markDisbursed.nModified > 0)      {
+        const markDisbursed = await LoanOfficerApplication.findOneAndUpdate({ _id }, { status: "Disbursed" });    
+        console.log(markDisbursed)      
+            if(markDisbursed)      {
             res.status(200).send({message:"Mark as disbursed succesfully"})       
+          }else{
+            res.status(400).send({message:"Error while marking as disbursed"})   
           }
            
                           
