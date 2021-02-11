@@ -20,6 +20,6 @@ module.exports = app => {
      app.get("/report/approval", verifyToken, isApproval,  loanApplication.reportApproval)
      app.get("/report/loanofficer", verifyToken, isLoanOfficer,   loanApplication.reportLoanOfficer)
      app.post("/disbursed",  verifyToken, loanApplication.markDisbursed)
-     app.get("/graph/report/loanofficer", verifyToken, isLoanOfficer,   loanApplication.graphReportLoanOfficer)
-     app.get("/graph/report/approval", verifyToken, isApproval,   loanApplication.graphReportApproval)
+    //  app.get("/graph/report/loanofficer", verifyToken, isLoanOfficer,   loanApplication.graphReportLoanOfficer)
+    //  app.get("/graph/report/approval", verifyToken, isApproval,   loanApplication.graphReportApproval)
 }
