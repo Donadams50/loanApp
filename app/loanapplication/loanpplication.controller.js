@@ -742,6 +742,8 @@ exports.LoanOfficerLoanCount = async (req, res) => {
 };
 
 
+
+
 //loan officer gets report
 exports.reportLoanOfficer = async (req, res) => {
     try{
