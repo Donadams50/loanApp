@@ -857,6 +857,35 @@ exports.graphReportApproval = async (req, res) => {
            res.status(500).send({message:"Error while getting loan request "})
        }
 };
+exports.graphReportLoanOfficer = async (req, res) => {
+    try{
+     //   const status = "Initiated"
+       const dateType = req.query.dateType
+      
+       if(dateType === "Today"){
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, disbursed: disbursed, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+                console.log("ope")
+                res.status(200).send(getLoanAssignedToMe)
+            }else if(dateType === "Month"){
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+          //const query = {, 
+                console.log("kotope")
+                console.log(req.user.id)
+                res.status(200).send(getLoanAssignedToMe)           
+            }else if(dateType === "Year"){
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+          //const query = {, 
+                console.log("kotope")
+                console.log(req.user.id)
+                res.status(200).send(getLoanAssignedToMe)           
+            }
+           
+              
+       }catch(err){
+           console.log(err)
+           res.status(500).send({message:"Error while getting loan request "})
+       }
+};
 
 
 
