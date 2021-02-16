@@ -827,28 +827,46 @@ exports.markDisbursed = async (req, res) => {
        }
   };
 
-  //loan officer gets report
+
+
+// graph data for approval
 exports.graphReportApproval = async (req, res) => {
     try{
      //   const status = "Initiated"
-       const dateType = req.query.dateType
+       const dateType = req.query.time
       
-       if(dateType === "Today"){
-         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, disbursed: disbursed, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
-                console.log("ope")
+       if(dateType === "today"){
+        fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
+        toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').sort({"_id": -1})  
+                console.log("today")
                 res.status(200).send(getLoanAssignedToMe)
-            }else if(dateType === "Month"){
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
-          //const query = {, 
-                console.log("kotope")
-                console.log(req.user.id)
+            }else if(dateType === "week"){
+                console.log("week")
+                fromDate = moment().startOf('week').format('YYYY-MM-DD 00:00:01');
+                toDate = moment().endOf('week').format('YYYY-MM-DD HH:mm:ss');
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+    
                 res.status(200).send(getLoanAssignedToMe)           
-            }else if(dateType === "Year"){
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, createdAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
-          //const query = {, 
-                console.log("kotope")
-                console.log(req.user.id)
+             }else if(dateType === "month"){
+                console.log("month")
+                fromDate = moment().startOf('month').format('YYYY-MM-DD 00:00:01');
+                toDate = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+ 
                 res.status(200).send(getLoanAssignedToMe)           
+            }else if(dateType === "year"){
+                console.log("year")
+                fromDate = moment().startOf('year').format('YYYY-MM-DD 00:00:01');
+                toDate = moment().endOf('year').format('YYYY-MM-DD HH:mm:ss');
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+      
+                res.status(200).send(getLoanAssignedToMe)           
+            }else{
+                fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
+                toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})        
+                res.status(200).send(getLoanAssignedToMe)
             }
            
               
@@ -857,40 +875,45 @@ exports.graphReportApproval = async (req, res) => {
            res.status(500).send({message:"Error while getting loan request "})
        }
 };
+
+
+// graph date for loan officer
 exports.graphReportLoanOfficer = async (req, res) => {
     try{
      //   const status = "Initiated"
        const dateType = req.query.time
       
-       if(dateType === "Today"){
+       if(dateType === "today"){
         fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
         toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
          const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').sort({"_id": -1})  
-                console.log("ope")
+                console.log("today")
                 res.status(200).send(getLoanAssignedToMe)
-            }else if(dateType === "Week"){
+            }else if(dateType === "week"){
+                console.log("week")
                 fromDate = moment().startOf('week').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('week').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
     
                 res.status(200).send(getLoanAssignedToMe)           
-             }else if(dateType === "Month"){
+             }else if(dateType === "month"){
+                console.log("month")
                 fromDate = moment().startOf('month').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
  
                 res.status(200).send(getLoanAssignedToMe)           
-            }else if(dateType === "Year"){
-
+            }else if(dateType === "year"){
+                console.log("year")
                 fromDate = moment().startOf('year').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('year').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
       
                 res.status(200).send(getLoanAssignedToMe)           
             }else{
                 fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})        
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})        
                 res.status(200).send(getLoanAssignedToMe)
             }
            
