@@ -925,8 +925,23 @@ exports.graphReportLoanOfficer = async (req, res) => {
 };
 
 
-
-
+// get loan details by phone number
+exports.getLoanDetails = async (req, res) => {
+    try{
+        
+             const phoneNumber = req.params.phoneNumber
+             const lim = 1
+             const findLoanByPhoneNumber = await LoanOfficerApplication.find({"form.phone": phoneNumber}).sort({"_id": -1}).limit(lim)
+        
+            console.log(findLoanByPhoneNumber)
+            res.status(200).send(findLoanByPhoneNumber)
+           
+        }catch(err){
+            console.log(err)
+            res.status(500).send({message:"Error while getting loan by phone number "})
+        }
+ 
+ };
     
 
 
