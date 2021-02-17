@@ -12,4 +12,5 @@ module.exports = app => {
  app.put("/branch/:id", verifyToken, isAdmin,  helper.updateBranch)
  app.post("/loan", verifyToken, isAdmin,  helper.createLoantype)
  app.get("/loan",    helper.findAllLoantype)
+ app.get("/bvn/validate/:bvnnumber",    helper.validateBvn)
 }

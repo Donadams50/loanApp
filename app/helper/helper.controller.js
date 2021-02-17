@@ -4,9 +4,10 @@ const Branches = db.branches;
 const Roles = db.roles;
 const Loantype = db.loantypes
 const sendemail = require('../helpers/emailhelper.js');
-
+const axios = require('axios');
 const uuid = require('uuid')
-
+const dotenv = require('dotenv');
+dotenv.config();
 
 // Create a new branch
 
@@ -284,7 +285,29 @@ exports.findAllLoantype = async (req, res) => {
        }
 };
 
-    
+// Validate bvn
+
+exports.validateBvn = async (req, res) => {
+    try{
+        const headers = {
+            'Authorization': process.env.flutter_secret_KEY
+          }
+           const bvnnumber = req.params.bvnnumber
+           validateBvn = await axios.get('https://api.flutterwave.com/v3/kyc/bvns/'+bvnnumber+'', {headers: headers})
+           //console.log(validateBvn)
+           if (validateBvn.data){
+                res.status(200).send(validateBvn.data)
+             }else{  
+
+                res.status(400).send({message:"Error while validating bvn "})
+               }
+           
+              
+       }catch(err){
+           console.log(err)
+           res.status(400).send({message:err})
+       }
+};
 
     
 
