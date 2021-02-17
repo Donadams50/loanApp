@@ -709,7 +709,8 @@ exports.getLoanById = async (req, res) => {
                 ongoingLoan:ongoingLoan,
                 completedLoan: completedLoan,
                 declinedLoan: declinedLoan,
-                totalLoan: totalLoan
+                totalLoan: totalLoan,
+                disbursedLoan: disbursedLoan
 
             })
      }catch(err){
@@ -735,7 +736,8 @@ exports.LoanOfficerLoanCount = async (req, res) => {
                 ongoingLoan:ongoingLoan,
                 completedLoan: completedLoan,
                 declinedLoan: declinedLoan,
-                totalLoan: totalLoan
+                totalLoan: totalLoan,
+                disbursedLoan: disbursedLoan
 
             })
      }catch(err){
