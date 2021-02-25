@@ -10,15 +10,15 @@ exports.validateBvn = async (req, res) => {
           }
            const bvnnumber = req.params.bvnnumber
            const lim = 1;
-           const findBvnDetails = await Bvndetails.find({"bvndetails.bvn": bvnnumber}).sort({"_id": -1}).limit(lim)
-           console.log(findBvnDetails.length)
-           if (findBvnDetails.length === 0){
+           const findBvnDetails = await Bvndetails.findOne({"bvndetails.data.bvn": bvnnumber}).sort({"_id": -1}).limit(lim)
+           console.log(findBvnDetails)
+           if (findBvnDetails === null ){
             validateBvn = await axios.get('https://api.flutterwave.com/v3/kyc/bvns/'+bvnnumber+'', {headers: headers})
             //console.log(validateBvn)
             if (validateBvn.data){
              const bvndetails = new Bvndetails({
                  
-                 bvndetails: validateBvn.data.data
+                 bvndetails: validateBvn.data
  
                      });
                   const savebvn = await  bvndetails.save()
@@ -30,7 +30,7 @@ exports.validateBvn = async (req, res) => {
             
            }
            else{
-            res.status(200).send(findBvnDetails)
+            res.status(200).send(findBvnDetails.bvndetails)
             }
               
        }catch(err){
