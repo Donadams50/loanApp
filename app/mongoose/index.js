@@ -18,6 +18,7 @@ db.loanofficerapplications = require("../loanapplication/loanofficerapplication.
 db.offices = require("../office/office.model.js")(mongoose);
 db.groups = require("../group/group.model.js")(mongoose)
 db.loantypes = require("../helper/loantype.model.js")(mongoose)
+db.bvndetails = require("../idvalidation/idvalidation.model.js")(mongoose)
 
 module.exports = db;
 

@@ -934,9 +934,10 @@ exports.graphReportLoanOfficer = async (req, res) => {
 exports.getLoanDetails = async (req, res) => {
     try{
         
-             const phoneNumber = req.params.phoneNumber
+             const phoneNumber = req.params.phoneNumber;
+             const loanType = req.query.loanType;
              const lim = 1
-             const findLoanByPhoneNumber = await LoanOfficerApplication.find({"form.phone": phoneNumber}).sort({"_id": -1}).limit(lim)
+             const findLoanByPhoneNumber = await LoanOfficerApplication.find({"form.phone": phoneNumber, loanType:loanType}).sort({"_id": -1}).limit(lim)
         
             console.log(findLoanByPhoneNumber)
             res.status(200).send(findLoanByPhoneNumber)
