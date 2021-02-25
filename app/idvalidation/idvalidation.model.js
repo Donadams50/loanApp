@@ -1,7 +1,7 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        Bvndetail: Object
+        bvndetails: Object
       },
       { timestamps: true }
     );
