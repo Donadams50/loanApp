@@ -9,7 +9,7 @@ const uuid = require('uuid')
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Create a new branch
+// Create a new branc
 
 exports.createBranch = async(req,res)=>{
     if (!req.body){

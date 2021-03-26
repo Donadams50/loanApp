@@ -20,7 +20,7 @@ db.mongoose
   .connect(db.url, { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
-     useFindAndModify: false 
+    useFindAndModify: false 
   })
   .then(() => {
     console.log("Connected to the database!");
@@ -38,7 +38,7 @@ db.mongoose
  require("./app/group/group.routes.js")(app)
  require("./app/files/files.routes.js")(app)
  require("./app/idvalidation/idvalidation.routes.js")(app)
-
+ require("./app/loanpayment/loanpayment.routes.js")(app)
  app.post('/',  (req,res)=>{
  
          

@@ -76,3 +76,19 @@ exports.signToken= (id, fullname,  Role, roleID, Branch, branchID,   OfficeTitle
         }
     
   }
+
+  exports.verifyAppKey= (req, res, next)=> { 
+    const token = req.headers.token
+    console.log(token) 
+    console.log(req.headers) 
+        if (token ===  process.env.app_secret) {
+         console.log(token) 
+          next();
+          
+        }else{
+          console.log(token) 
+          res.status(401).json({ status: 401, error: 'Unauthorized to access this resource' });
+          
+        }
+    
+  }

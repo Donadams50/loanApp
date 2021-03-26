@@ -142,6 +142,7 @@ console.log(req.body)
                         status: "Initiated",
                         assignedTo: req.user.id,
                         loanOfficer: req.user.id,
+                        paymentStatus: "NOT INITIATED",
                         // signed: {"name": req.user.fullName, "remark": "Valid", "title": "loan_officer", "user_id":req.user.id},
                         customerApplicationId: req.body.form.customerApplicationId || '',
                         declinedBy: '',
@@ -700,7 +701,8 @@ exports.getLoanById = async (req, res) => {
         const ongoingLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Ongoing"})
         const completedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Completed"})
         const declinedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Declined"})
-        const disbursedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Disbursed"})
+      //const disbursedLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ] })
+      
         const totalLoan = await LoanOfficerApplication.countDocuments({"approvalProcess.userInOffice": req.user.id})
 
       
@@ -709,8 +711,7 @@ exports.getLoanById = async (req, res) => {
                 ongoingLoan:ongoingLoan,
                 completedLoan: completedLoan,
                 declinedLoan: declinedLoan,
-                totalLoan: totalLoan,
-                disbursedLoan: disbursedLoan
+                totalLoan: totalLoan
 
             })
      }catch(err){
@@ -727,17 +728,18 @@ exports.LoanOfficerLoanCount = async (req, res) => {
         const ongoingLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Ongoing"})
         const completedLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Completed"})
         const declinedLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Declined"})
-        const disbursedLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Disbursed"})
+      //  const disbursedLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ]})
+        
         const totalLoan = await LoanOfficerApplication.countDocuments({loanOfficer: req.user.id})
 
-      
+    // const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id, status : "Completed",  $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ],    loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+
         res.status(200).send(
             {
                 ongoingLoan:ongoingLoan,
                 completedLoan: completedLoan,
                 declinedLoan: declinedLoan,
-                totalLoan: totalLoan,
-                disbursedLoan: disbursedLoan
+                totalLoan: totalLoan
 
             })
      }catch(err){
@@ -753,21 +755,21 @@ exports.LoanOfficerLoanCount = async (req, res) => {
 exports.reportLoanOfficer = async (req, res) => {
     try{
      //   const status = "Initiated"
-       const disbursed = req.query.disbursed
-       const status = req.query.status
+             const status = req.query.status
        const fromDate = req.query.fromDate
        const toDate = req.query.toDate
        const loanType = req.query.loanType
+       paymentStatus = "NOT INITIATED"
        console.log(fromDate)
        console.log(toDate)
 
 
-       if(disbursed){
-         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, disbursed: disbursed,  loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+       if(status === "Disbursed"){
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ],  loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
                 console.log("ope")
                 res.status(200).send(getLoanAssignedToMe)
             }else{
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status,  loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status : status, paymentStatus: paymentStatus, loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
           //const query = {, 
                 console.log("kotope")
                 console.log(req.user.id)
@@ -786,18 +788,18 @@ exports.reportLoanOfficer = async (req, res) => {
 exports.reportApproval = async (req, res) => {
     try{
      //   const status = "Initiated"
-       const disbursed = req.query.disbursed
-       const status = req.query.status
+             const status = req.query.status
        const fromDate = req.query.fromDate
        const toDate = req.query.toDate
        const loanType = req.query.loanType
-       if(disbursed){
-         const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, disbursed : disbursed,  loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
+       const paymentStatus = "NOT INITIATED"
+       if( status === "Disbursed"){
+         const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id, status : "Completed",  $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ],    loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).sort({"_id": -1})  
               
          console.log(req.user.id)
                 res.status(200).send(getLoanAssignedToMe)
             }else{
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status,  loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) }  }).sort({"_id": -1})             
+                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice": req.user.id,  status : status, paymentStatus: paymentStatus, loanType:loanType, updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) }  }).sort({"_id": -1})             
                 console.log(req.user.id)
                  res.status(200).send(getLoanAssignedToMe)
                 
@@ -844,37 +846,75 @@ exports.graphReportApproval = async (req, res) => {
        if(dateType === "today"){
         fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
         toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-         const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').sort({"_id": -1})  
-                console.log("today")
-                res.status(200).send(getLoanAssignedToMe)
+        // const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select('paymentStatus -_id').sort({"_id": -1})  
+        // console.log("today")
+        // res.status(200).send(getLoanAssignedToMe)
             }else if(dateType === "week"){
                 console.log("week")
                 fromDate = moment().startOf('week').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('week').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select('updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})  
     
-                res.status(200).send(getLoanAssignedToMe)           
+                // res.status(200).send(getLoanAssignedToMe)           
              }else if(dateType === "month"){
                 console.log("month")
                 fromDate = moment().startOf('month').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})  
  
-                res.status(200).send(getLoanAssignedToMe)           
+                // res.status(200).send(getLoanAssignedToMe)           
             }else if(dateType === "year"){
                 console.log("year")
                 fromDate = moment().startOf('year').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('year').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ],  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})  
       
-                res.status(200).send(getLoanAssignedToMe)           
+                // res.status(200).send(getLoanAssignedToMe)           
             }else{
                 fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})        
-                res.status(200).send(getLoanAssignedToMe)
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ],  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})        
+                // res.status(200).send(getLoanAssignedToMe)
             }
+            const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": 1})  
+            console.log("today")
+            console.log(getLoanAssignedToMe)
+            let arrayHelper = []
+               getLoanAssignedToMe.forEach((number, index, array) => {
            
+            console.log(index)
+             if(number.paymentStatus === "SUCCESSFUL"){
+                
+               array[index].form.failedAmount = 0
+               array[index].form.pendingAmount = 0              
+               array[index].form.successfulAmount = number.form.loanAmount
+               array[index].form.updatedAt = number.updatedAt
+               console.log( array[index].form.successfulAmount)
+               
+           
+             }else if(number.paymentStatus === "FAILED"){
+               array[index].form.failedAmount = number.form.loanAmount
+               array[index].form.pendingAmount = 0
+               array[index].form.successfulAmount = 0
+               array[index].form.updatedAt = number.updatedAt
+               
+             }else if(number.paymentStatus === "PENDING"){
+               array[index].form.failedAmount = 0
+               array[index].form.pendingAmount = number.form.loanAmount
+               array[index].form.successfulAmount = 0
+               array[index].form.updatedAt = number.updatedAt
+               
+             }
+             
+            
+             arrayHelper= array
+            
+           });
+           
+          
+           let result = arrayHelper.map(b => b.form);
+           // console.log(result);
+             res.status(200).send(result)
               
        }catch(err){
            console.log(err)
@@ -892,38 +932,79 @@ exports.graphReportLoanOfficer = async (req, res) => {
        if(dateType === "today"){
         fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
         toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-         const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').sort({"_id": -1})  
-                console.log("today")
-                res.status(200).send(getLoanAssignedToMe)
+        //  const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select('paymentStatus -_id').sort({"_id": -1})  
+        //         console.log("today")
+        //         res.status(200).send(getLoanAssignedToMe)
             }else if(dateType === "week"){
                 console.log("week")
                 fromDate = moment().startOf('week').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('week').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})  
     
-                res.status(200).send(getLoanAssignedToMe)           
+                // res.status(200).send(getLoanAssignedToMe)           
              }else if(dateType === "month"){
                 console.log("month")
                 fromDate = moment().startOf('month').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})  
  
-                res.status(200).send(getLoanAssignedToMe)           
+                // res.status(200).send(getLoanAssignedToMe)           
             }else if(dateType === "year"){
                 console.log("year")
                 fromDate = moment().startOf('year').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('year').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed", updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})  
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})  
       
-                res.status(200).send(getLoanAssignedToMe)           
+                // res.status(200).send(getLoanAssignedToMe)           
             }else{
                 fromDate = moment().startOf('day').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
-                const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Disbursed",  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').sort({"_id": -1})        
-                res.status(200).send(getLoanAssignedToMe)
+                // const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ],  updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": -1})        
+                // res.status(200).send(getLoanAssignedToMe)
             }
            
-              
+            const getLoanAssignedToMe = await LoanOfficerApplication.find({loanOfficer:req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select(' updatedAt -_id').select('paymentStatus -_id').sort({"_id": 1})  
+            console.log("today")
+            console.log(getLoanAssignedToMe)
+            let arrayHelper = []
+               getLoanAssignedToMe.forEach((number, index, array) => {
+           
+            console.log(index)
+             if(number.paymentStatus === "SUCCESSFUL"){
+                
+               array[index].form.failedAmount = 0
+               array[index].form.pendingAmount = 0              
+               array[index].form.successfulAmount = number.form.loanAmount
+               array[index].form.updatedAt = number.updatedAt
+               console.log( array[index].form.successfulAmount)
+               
+           
+             }else if(number.paymentStatus === "FAILED"){
+               array[index].form.failedAmount = number.form.loanAmount
+               array[index].form.pendingAmount = 0
+               array[index].form.successfulAmount = 0
+               array[index].form.updatedAt = number.updatedAt
+               
+             }else if(number.paymentStatus === "PENDING"){
+               array[index].form.failedAmount = 0
+               array[index].form.pendingAmount = number.form.loanAmount
+               array[index].form.successfulAmount = 0
+               array[index].form.updatedAt = number.updatedAt
+               
+             }
+             
+            
+             arrayHelper= array
+            
+           });
+           
+          
+           let result = arrayHelper.map(b => b.form);
+            console.log(result);
+             res.status(200).send(result)
+
+
+
        }catch(err){
            console.log(err)
            res.status(500).send({message:"Error while getting loan request "})
@@ -953,7 +1034,7 @@ exports.getLoanDetails = async (req, res) => {
 
 
 
-// process email one
+// process email 
 async function processEmail(emailFrom, emailTo, subject, link, link2, text, fName){
   try{
       //create org details
