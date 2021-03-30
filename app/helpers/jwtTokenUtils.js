@@ -30,6 +30,8 @@ exports.signToken= (id, fullname,  Role, roleID, Branch, branchID,   OfficeTitle
     }
     
   }
+
+  
   exports.isAdmin= (req, res, next)=> { 
     const token = req.headers.authorization || req.params.token;
   

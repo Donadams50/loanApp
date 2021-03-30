@@ -5,7 +5,7 @@ module.exports = app => {
    
   app.post("/initiate/payment", verifyToken, loanpayment.initaitePayment)
   
-  app.put("/loanapp/paymentstatus", verifyToken, verifyAppKey, loanpayment.updatePaymentStatus)
+  app.put("/loanapp/paymentstatus", verifyAppKey, loanpayment.updatePaymentStatus)
 
 
     }
