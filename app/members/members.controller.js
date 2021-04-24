@@ -17,7 +17,7 @@ exports.create = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
     }
-console.log(req.body)
+
   const passwordGenerated =  getCode();
     const {   fullName,  role, roleId,  branch , branchId, officeTitle, officeId, email  } = req.body;
   
@@ -338,7 +338,7 @@ exports.forgotPassword = async(req,res)=>{
         if (!req.body){
             res.status(400).send({message:"Content cannot be empty"});
         }
-    console.log(req.body)
+    
       // let {myrefCode} = req.query;
         const {   email } = req.body;
       
@@ -408,7 +408,7 @@ exports.forgotPassword = async(req,res)=>{
         if (!req.body){
             res.status(400).send({message:"Content cannot be empty"});
         }
-    console.log(req.body)
+    
       // let {myrefCode} = req.query;
         const { password, code} = req.body;
       
@@ -484,7 +484,7 @@ exports.approvalForgotPassword = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
     }
-console.log(req.body)
+
   // let {myrefCode} = req.query;
     const {   email } = req.body;
   
@@ -553,7 +553,7 @@ exports.approvalResetPassword = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
     }
-console.log(req.body)
+
   // let {myrefCode} = req.query;
     const { password, code} = req.body;
   
@@ -629,7 +629,7 @@ exports.changePassword = async(req,res)=>{
     if (!req.body){
         res.status(400).send({message:"Content cannot be empty"});
     }
-console.log(req.body)
+
   // let {myrefCode} = req.query;
     const { oldPassword, newPassword} = req.body;
   

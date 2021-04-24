@@ -12,26 +12,26 @@ exports.validateBvn = async (req, res) => {
            const lim = 1;
            const findBvnDetails = await Bvndetails.findOne({"bvndetails.data.bvn": bvnnumber}).sort({"_id": -1}).limit(lim)
            console.log(findBvnDetails)
-           if (findBvnDetails === null ){
+          // if (findBvnDetails === null ){
             validateBvn = await axios.get('https://api.flutterwave.com/v3/kyc/bvns/'+bvnnumber+'', {headers: headers})
             //console.log(validateBvn)
-            if (validateBvn.data){
-             const bvndetails = new Bvndetails({
+            // if (validateBvn.data){
+            //  const bvndetails = new Bvndetails({
                  
-                 bvndetails: validateBvn.data
+            //      bvndetails: validateBvn.data
  
-                     });
-                  const savebvn = await  bvndetails.save()
+            //          });
+            //       const savebvn = await  bvndetails.save()
                  res.status(200).send(validateBvn.data)
-              }else{  
+            //   }else{  
  
-                 res.status(400).send({message:"Error while validating bvn "})
-                }
+            //      res.status(400).send({message:"Error while validating bvn "})
+            //     }
             
-           }
-           else{
-            res.status(200).send(findBvnDetails.bvndetails)
-            }
+        //    }
+        //    else{
+        //     res.status(200).send(findBvnDetails.bvndetails)
+        //     }
               
        }catch(err){
            console.log(err)

@@ -849,7 +849,7 @@ exports.graphReportApproval = async (req, res) => {
         // const getLoanAssignedToMe = await LoanOfficerApplication.find({"approvalProcess.userInOffice":req.user.id, status: "Completed", $or:[  {'paymentStatus':"PENDING"}, {'paymentStatus':"FAILED"}, {'paymentStatus':"SUCCESSFUL"} ], updatedAt:{ $gte: new Date(new Date(fromDate).setHours(00, 00, 00)), $lte: new Date(new Date(toDate).setHours(23, 59, 59)) } }).select('form.loanAmount -_id').select('paymentStatus -_id').sort({"_id": -1})  
         // console.log("today")
         // res.status(200).send(getLoanAssignedToMe)
-            }else if(dateType === "week"){
+        }else if(dateType === "week"){
                 console.log("week")
                 fromDate = moment().startOf('week').format('YYYY-MM-DD 00:00:01');
                 toDate = moment().endOf('week').format('YYYY-MM-DD HH:mm:ss');
