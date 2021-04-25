@@ -38,11 +38,11 @@ console.log(process.env.app_secret)
                 const   pay = await axios.post(''+baseUrl+'/bulkpay/3ptwebapp/loanpayment/', params, {headers: headers})
               //  console.log(pay.data)
                   if(pay){
-                      console.log(req.user)
+                      console.log(req.user.uniqueId)
                     const emailFrom = 'astrapay@astrapolaris.com';
                     const subject = 'Payment link';                      
-                    const hostUrl = "bulk.astrapay.com.ng/make_payment.html?payId="+pay.data.uniqueId+""
-                    const hostUrl2 = "https://bulk.astrapay.com.ng/make_payment.html?payId="+pay.data.uniqueId+""    
+                    const hostUrl = "64.227.122.155:81/make_payment.html?payId="+pay.data.uniqueId+""
+                    const hostUrl2 = "http://64.227.122.155:81/make_payment.html?payId="+pay.data.uniqueId+""    
                     const   text = 'Please click on the link below to make your payment'
                     const emailTo = req.user.email
                     const link = `${hostUrl}`; 
